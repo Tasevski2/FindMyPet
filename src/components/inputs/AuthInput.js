@@ -1,6 +1,13 @@
-import { makeStyles, useTheme, Input } from '@rneui/themed';
+import { makeStyles, useTheme, Input, Icon } from '@rneui/themed';
 
-const AuthInput = ({ value, onChangeText, errorMessage, label, ...rest }) => {
+const AuthInput = ({
+  value,
+  onChangeText,
+  errorMessage,
+  label,
+  icon = { type, name },
+  ...rest
+}) => {
   const { theme } = useTheme();
   const styles = useStyles();
 
@@ -12,6 +19,12 @@ const AuthInput = ({ value, onChangeText, errorMessage, label, ...rest }) => {
       errorMessage={errorMessage}
       selectionColor={theme.colors.white}
       autoCapitalize='none'
+      rightIcon={
+        icon?.type &&
+        icon?.name && (
+          <Icon type={icon.type} name={icon.name} color={theme.colors.white} />
+        )
+      }
       {...styles}
       {...rest}
     />

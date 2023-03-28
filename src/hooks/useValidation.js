@@ -25,16 +25,16 @@ const useValidation = () => {
     _value = options.noWhiteSpace ? _value.replace(/\s+/g, '') : _value;
     if (_value.trim().length < options.minLength) {
       return {
-        error: `${capitalize(fieldName)} minimum length is ${
+        error: `Полето '${capitalize(fieldName)}' треба да е подолго од ${
           options.minLength
-        } characters!`,
+        } карактери!`,
       };
     }
     return {};
   };
   const validateEmail = (email) => {
     if (!isEmail(email)) {
-      return { error: 'Invalid format of email!' };
+      return { error: 'Невалиден емаил!' };
     }
     return {};
   };
@@ -42,7 +42,7 @@ const useValidation = () => {
   const validatePassword = (password = '') => {
     if (password.length < MIN_PASSWORD_LENGTH) {
       return {
-        error: `Password minimum length is ${MIN_PASSWORD_LENGTH} characters!`,
+        error: `Лозинката треба да е подолга од ${MIN_PASSWORD_LENGTH} карактери!`,
       };
     }
     if (
@@ -53,7 +53,8 @@ const useValidation = () => {
       )
     ) {
       return {
-        error: 'Password must have at least 1 uppercase, 1 digit and 1 symbol!',
+        error:
+          'Лозинката треба да содржи најмалку 1 голема буква, 1 број и 1 симбол!',
       };
     }
 

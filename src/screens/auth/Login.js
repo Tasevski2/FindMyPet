@@ -1,4 +1,4 @@
-import { Button, makeStyles } from '@rneui/themed';
+import { Button, Icon, makeStyles } from '@rneui/themed';
 import { useState } from 'react';
 import { View, Text } from 'react-native';
 import AuthLayout from './Layout';
@@ -25,32 +25,34 @@ const LoginScreen = () => {
     <AuthLayout>
       <View>
         <AuthInput
-          label='Email'
+          label='Емаил'
           value={email}
           onChangeText={setEmail}
           errorMessage={errors.email}
+          icon={{ type: 'material-community', name: 'email' }}
         />
         <AuthInput
-          label='Password'
+          label='Лозинка'
           value={password}
           onChangeText={setPassword}
           errorMessage={errors.password}
+          icon={{ type: 'font-awesome-5', name: 'lock' }}
           secureTextEntry
         />
       </View>
       <View>
         <Button
-          title='Log In'
+          title='Најави се'
           containerStyle={styles.submitBtn}
           onPress={onSubmit}
         />
         <Text style={styles.text}>
-          No account !? Go to{' '}
+          Немате профил?{' '}
           <Text
             style={styles.enhancedText}
             onPress={() => navigation.navigate('Register')}
           >
-            Register.
+            Регистрирајте се!
           </Text>
         </Text>
       </View>

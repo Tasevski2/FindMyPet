@@ -21,8 +21,8 @@ const RegisterScreen = () => {
   const onSubmit = () => {
     const { error: emailError } = validateEmail(email);
     const { error: passwordError } = validatePassword(password);
-    const { error: fullNameError } = validateLength(fullName, 'Full Name');
-    const { error: phoneError } = validateLength(phone, 'Phone Number', {
+    const { error: fullNameError } = validateLength(fullName, 'Име и Презиме');
+    const { error: phoneError } = validateLength(phone, 'Телефон', {
       minLength: PHONE_NUMBER_LENGTH,
       noWhiteSpace: true,
     });
@@ -39,45 +39,49 @@ const RegisterScreen = () => {
     <AuthLayout>
       <View>
         <AuthInput
-          label='Full Name'
+          label='Име и Презиме'
           value={fullName}
           onChangeText={setFullName}
+          icon={{ type: 'material-community', name: 'account' }}
           errorMessage={errors.fullName}
         />
         <AuthInput
-          label='Phone Number'
+          label='Телефон'
           value={phone}
           onChangeText={(text) => setPhone(text.replace(/[^0-9]/g, ''))}
           errorMessage={errors.phone}
           keyboardType='numeric'
+          icon={{ type: 'font-awesome-5', name: 'phone' }}
         />
         <AuthInput
-          label='Email'
+          label='Емаил'
           value={email}
           onChangeText={setEmail}
           errorMessage={errors.email}
+          icon={{ type: 'material-community', name: 'email' }}
         />
         <AuthInput
-          label='Password'
+          label='Лозинка'
           value={password}
           onChangeText={setPassword}
           errorMessage={errors.password}
+          icon={{ type: 'font-awesome-5', name: 'lock' }}
           secureTextEntry
         />
       </View>
       <View>
         <Button
-          title='Register'
+          title='Регистрирај се'
           containerStyle={styles.submitBtn}
           onPress={onSubmit}
         />
         <Text style={styles.text}>
-          Already have an account !? Go to{' '}
+          Имате профил?{' '}
           <Text
             style={styles.enhancedText}
             onPress={() => navigation.navigate('LogIn')}
           >
-            Log In.
+            Најавете се!
           </Text>
         </Text>
       </View>
