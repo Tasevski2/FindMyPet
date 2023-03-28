@@ -1,2 +1,0 @@
-# FindMyPet
-MIS Domasna

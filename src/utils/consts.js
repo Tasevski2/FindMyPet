@@ -1,0 +1,2 @@
+export const MIN_SPLASH_SCREEN_TIME_MS = 1500;
+export const PHONE_NUMBER_LENGTH = 9;
