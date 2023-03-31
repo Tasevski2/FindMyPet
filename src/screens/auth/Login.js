@@ -1,7 +1,7 @@
-import { Button, Icon, makeStyles } from '@rneui/themed';
+import { Button, makeStyles } from '@rneui/themed';
 import { useState } from 'react';
 import { View, Text } from 'react-native';
-import AuthLayout from './Layout';
+import AuthLayout from '../../layouts/AuthLayout';
 import AuthInput from '../../components/inputs/AuthInput';
 import { useValidation } from '../../hooks';
 import { useNavigation } from '@react-navigation/native';

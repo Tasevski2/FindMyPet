@@ -2,7 +2,8 @@ import { makeStyles } from '@rneui/themed';
 import { Image, View, Dimensions } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import logo from '../../assets/logo.png';
+import logo from '../assets/logo.png';
+import AppLayout from './AppLayout';
 
 const AuthLayout = ({ children }) => {
   const insets = useSafeAreaInsets();
@@ -12,10 +13,12 @@ const AuthLayout = ({ children }) => {
   });
 
   return (
-    <View style={styles.container}>
-      <Image source={logo} style={styles.logo} />
-      <View style={styles.childrenWrapper}>{children}</View>
-    </View>
+    <AppLayout>
+      <View style={styles.container}>
+        <Image source={logo} style={styles.logo} />
+        <View style={styles.childrenWrapper}>{children}</View>
+      </View>
+    </AppLayout>
   );
 };
 
@@ -23,7 +26,6 @@ const useStyles = makeStyles(
   (theme, { insetsPaddingTop, insetsPaddingBottom }) => ({
     container: {
       alignItems: 'center',
-      backgroundColor: theme.colors.lightBlue300,
       height: '100%',
       width: '100%',
       paddingTop: insetsPaddingTop + Dimensions.get('window').height * 0.02,
