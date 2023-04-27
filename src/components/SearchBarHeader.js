@@ -2,10 +2,17 @@ import { SearchBar, makeStyles, Icon, useTheme } from '@rneui/themed';
 import { View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-const SearchBarHeader = ({ value, onChangeText }) => {
+const SearchBarHeader = ({
+  value,
+  onChangeText,
+  shouldSetInsetPaddingTop = true,
+}) => {
   const { theme } = useTheme();
   const insets = useSafeAreaInsets();
-  const styles = useStyles({ insetsPaddingTop: insets.top });
+  const styles = useStyles({
+    insetsPaddingTop: insets.top,
+    shouldSetInsetPaddingTop,
+  });
 
   return (
     <View style={styles.container}>
@@ -36,8 +43,7 @@ const SearchBarHeader = ({ value, onChangeText }) => {
 
 const useStyles = makeStyles((theme, props) => ({
   container: {
-    height: 110,
-    paddingTop: props.insetsPaddingTop,
+    paddingTop: props.shouldSetInsetPaddingTop ? props.insetsPaddingTop : 0,
     alignItems: 'center',
     backgroundColor: theme.colors.lightBlue600,
   },

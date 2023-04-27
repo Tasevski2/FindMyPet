@@ -2,7 +2,7 @@ import { View, Text } from 'react-native';
 import { Button } from '@rneui/themed';
 import { useState } from 'react';
 import AuthLayout from '../../layouts/AuthLayout';
-import AuthInput from '../../components/inputs/AuthInput';
+import MyInput from '../../components/inputs/MyInput';
 import { useValidation } from '../../hooks';
 import { useStyles } from './Login';
 import { useNavigation } from '@react-navigation/native';
@@ -38,14 +38,14 @@ const RegisterScreen = () => {
   return (
     <AuthLayout>
       <View>
-        <AuthInput
+        <MyInput
           label='Име и Презиме'
           value={fullName}
           onChangeText={setFullName}
           icon={{ type: 'material-community', name: 'account' }}
           errorMessage={errors.fullName}
         />
-        <AuthInput
+        <MyInput
           label='Телефон'
           value={phone}
           onChangeText={(text) => setPhone(text.replace(/[^0-9]/g, ''))}
@@ -53,14 +53,14 @@ const RegisterScreen = () => {
           keyboardType='numeric'
           icon={{ type: 'font-awesome-5', name: 'phone' }}
         />
-        <AuthInput
+        <MyInput
           label='Емаил'
           value={email}
           onChangeText={setEmail}
           errorMessage={errors.email}
           icon={{ type: 'material-community', name: 'email' }}
         />
-        <AuthInput
+        <MyInput
           label='Лозинка'
           value={password}
           onChangeText={setPassword}

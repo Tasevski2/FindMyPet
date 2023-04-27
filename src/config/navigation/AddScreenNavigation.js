@@ -6,7 +6,7 @@ const AddStack = createNativeStackNavigator();
 const AddScreenNavigation = () => {
   return (
     <AddStack.Navigator>
-      <AddStack.Screen name='Add' component={AddScreen} />
+      <AddStack.Screen name='Додај изгубен миленик' component={AddScreen} />
     </AddStack.Navigator>
   );
 };

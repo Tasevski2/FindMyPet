@@ -13,8 +13,8 @@ import {
   Dimensions,
   TouchableWithoutFeedback,
 } from 'react-native';
-import { mockUser } from '../../../mockData';
 import AppLayout from '../../layouts/AppLayout';
+import { useSelector } from 'react-redux';
 
 const formatPhoneNumber = (number = '') => {
   let res = [];
@@ -64,15 +64,19 @@ const bottomNavigation = [
 ];
 
 const MyProfileScreen = ({ navigation }) => {
+  const user = useSelector((store) => store.user.user);
   const styles = useStyles();
   const { theme } = useTheme();
   return (
     <AppLayout shouldSetInsetsPaddingTop>
       <ScrollView contentContainerStyle={styles.container}>
-        <View style={styles.avatarWrapper}>
-          <Avatar source={mockUser.photo} size={200} rounded />
-        </View>
-        <Text style={styles.fullname}>{mockUser.fullName}</Text>
+        <Avatar
+          source={user.photo}
+          size={200}
+          rounded
+          containerStyle={styles.avatarContainer}
+        />
+        <Text style={styles.fullname}>{user.fullName}</Text>
         <Divider
           style={styles.divider}
           color={theme.colors.white}
@@ -82,17 +86,17 @@ const MyProfileScreen = ({ navigation }) => {
         <View style={styles.detailsRow}>
           <Text style={styles.detailsKey}>Телефонски број</Text>
           <Text style={styles.detailsValue}>
-            {formatPhoneNumber(mockUser.phoneNumber)}
+            {formatPhoneNumber(user.phoneNumber)}
           </Text>
         </View>
         <View style={styles.detailsRow}>
           <Text style={styles.detailsKey}>Е-маил</Text>
-          <Text style={styles.detailsValue}>{mockUser.email}</Text>
+          <Text style={styles.detailsValue}>{user.email}</Text>
         </View>
         <View style={styles.navWrapper}>
           {bottomNavigation.map(({ getIconData, label, navigateTo }, ind) => (
             <TouchableWithoutFeedback
-              onPress={() => navigation.navigate(navigateTo)}
+              onPress={() => navigation.push(navigateTo)}
               key={ind}
             >
               <Card
@@ -124,9 +128,8 @@ const useStyles = makeStyles((theme) => ({
     alignItems: 'center',
     paddingTop: Dimensions.get('window').height * 0.05,
   },
-  avatarWrapper: {
-    backgroundColor: 'white',
-    borderRadius: 100,
+  avatarContainer: {
+    backgroundColor: theme.colors.white,
   },
   fullname: {
     fontWeight: '800',

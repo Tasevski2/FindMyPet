@@ -2,7 +2,7 @@ import { Button, makeStyles } from '@rneui/themed';
 import { useState } from 'react';
 import { View, Text } from 'react-native';
 import AuthLayout from '../../layouts/AuthLayout';
-import AuthInput from '../../components/inputs/AuthInput';
+import MyInput from '../../components/inputs/MyInput';
 import { useValidation } from '../../hooks';
 import { useNavigation } from '@react-navigation/native';
 
@@ -24,14 +24,14 @@ const LoginScreen = () => {
   return (
     <AuthLayout>
       <View>
-        <AuthInput
+        <MyInput
           label='Емаил'
           value={email}
           onChangeText={setEmail}
           errorMessage={errors.email}
           icon={{ type: 'material-community', name: 'email' }}
         />
-        <AuthInput
+        <MyInput
           label='Лозинка'
           value={password}
           onChangeText={setPassword}

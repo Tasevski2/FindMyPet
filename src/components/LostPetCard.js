@@ -1,7 +1,10 @@
+import { useNavigation } from '@react-navigation/native';
 import { Card, Icon, makeStyles } from '@rneui/themed';
-import { Image, Text, View } from 'react-native';
+import { Image, Text, TouchableWithoutFeedback, View } from 'react-native';
 
-const LostPetCard = ({ id, name, photo, petOwner, description }) => {
+const LostPetCard = (props) => {
+  const { id, name, photo, petOwner, description } = props;
+  const navigation = useNavigation();
   const styles = useStyles();
   return (
     <Card
@@ -20,12 +23,16 @@ const LostPetCard = ({ id, name, photo, petOwner, description }) => {
           {description}
         </Text>
       </View>
-      <Icon
-        type='material'
-        name='more-horiz'
-        iconStyle={styles.dotsIconStyle}
-        containerStyle={styles.dotsContainerStyle}
-      />
+      <TouchableWithoutFeedback
+        onPress={() => navigation.navigate('PetAdditionalInfo', props)}
+      >
+        <Icon
+          type='material'
+          name='more-horiz'
+          iconStyle={styles.dotsIconStyle}
+          containerStyle={styles.dotsContainerStyle}
+        />
+      </TouchableWithoutFeedback>
     </Card>
   );
 };

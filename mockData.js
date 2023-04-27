@@ -17,9 +17,18 @@ export const mockLostPets = [
     name: 'Niki',
     petOwner: {
       phoneNumber: '123123123',
+      fullName: 'Jana',
     },
     description: 'Ve molam dokoku zabelezite...',
     type: 'dog',
+    lostAtTime: new Date().toISOString(),
+    lostAtLocation: {
+      coordinates: {
+        latitude: 41.987617,
+        longitude: 21.442179,
+      },
+      municipality: 'Aerodrom',
+    },
   },
   {
     id: 2,
@@ -166,5 +175,57 @@ export const mockNotifications = [
     id: 7,
     type: 'NEW_MESSAGE',
     details: { description: 'Vasiot milenik e zabelezan na nova lokacija!' },
+  },
+];
+
+export const mockMessages = [
+  {
+    id: 1,
+    photo: avatarPhoto,
+    fullName: 'Viktor',
+    message: 'Go vidov nikii pred 5 min',
+  },
+  {
+    id: 2,
+    photo: avatarPhoto,
+    fullName: 'Jana',
+    message:
+      'Go vidov nikii pred 5 min,Go vidov nikii pred 5 min,Go vidov nikii pred 5 min',
+  },
+  {
+    id: 3,
+    photo: avatarPhoto,
+    fullName: 'Viktor',
+    message: 'Go vidov nikii pred 5 min',
+  },
+  {
+    id: 4,
+    photo: avatarPhoto,
+    fullName: 'Viktor',
+    message: 'Go vidov nikii pred 5 min',
+  },
+  {
+    id: 5,
+    photo: avatarPhoto,
+    fullName: 'Viktor',
+    message: 'Go vidov nikii pred 5 min',
+  },
+  {
+    id: 6,
+    photo: avatarPhoto,
+    fullName: 'Helow',
+    message: 'Go vidov nikii pred 5 min',
+  },
+  {
+    id: 7,
+    photo: avatarPhoto,
+    fullName: '1234',
+    message: 'Go vidov nikii pred 5 min',
+  },
+  {
+    id: 8,
+    photo: avatarPhoto,
+    fullName: 'Test',
+    message: 'Go vidov nikii pred 5 min',
   },
 ];

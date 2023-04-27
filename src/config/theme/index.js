@@ -39,6 +39,7 @@ const theme = createTheme({
     ...redColor,
     ...yellowColor,
     ...greenColor,
+    whiteSmoke: '#fbfbfb',
     appBackground: lightBlueColor.lightBlue200,
     cardBackground: lightBlueColor.lightBlue300,
   },

@@ -1,28 +1,31 @@
 import { makeStyles, useTheme, Input, Icon } from '@rneui/themed';
 
-const AuthInput = ({
+const MyInput = ({
   value,
   onChangeText,
   errorMessage,
   label,
-  icon = { type, name },
+  icon,
+  reverseColor = false,
   ...rest
 }) => {
   const { theme } = useTheme();
-  const styles = useStyles();
-
+  const mainColor = reverseColor
+    ? theme.colors.lightBlue200
+    : theme.colors.white;
+  const styles = useStyles({ mainColor });
   return (
     <Input
       label={label}
       value={value}
       onChangeText={onChangeText}
       errorMessage={errorMessage}
-      selectionColor={theme.colors.white}
+      selectionColor={mainColor}
       autoCapitalize='none'
       rightIcon={
         icon?.type &&
         icon?.name && (
-          <Icon type={icon.type} name={icon.name} color={theme.colors.white} />
+          <Icon type={icon.type} name={icon.name} color={mainColor} />
         )
       }
       {...styles}
@@ -31,17 +34,17 @@ const AuthInput = ({
   );
 };
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles((theme, { mainColor }) => ({
   labelStyle: {
-    color: theme.colors.white,
+    color: mainColor,
   },
   inputStyle: {
-    color: theme.colors.white,
+    color: mainColor,
     fontWeight: 'bold',
   },
   inputContainerStyle: {
-    borderColor: theme.colors.white,
+    borderColor: mainColor,
   },
 }));
 
-export default AuthInput;
+export default MyInput;

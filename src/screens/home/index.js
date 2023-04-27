@@ -1,4 +1,4 @@
-import { View, Text, FlatList, ScrollView } from 'react-native';
+import { FlatList } from 'react-native';
 import { makeStyles } from '@rneui/themed';
 import AppLayout from '../../layouts/AppLayout';
 import SearchBarHeader from '../../components/SearchBarHeader';
@@ -31,9 +31,7 @@ const HomeScreen = () => {
 
   return (
     <AppLayout>
-      <View style={styles.container}>
-        <SearchBarHeader value={search} onChangeText={setSearch} />
-      </View>
+      <SearchBarHeader value={search} onChangeText={setSearch} />
 
       <FlatList
         data={filteredLostPets}

@@ -79,6 +79,7 @@ const MainNavigation = () => {
         name='MyProfileTab'
         component={MyProfileScreenNavigation}
         options={{
+          tabBarHideOnKeyboard: true,
           tabBarIcon: ({ focused }) => (
             <Icon
               type='material-community'
