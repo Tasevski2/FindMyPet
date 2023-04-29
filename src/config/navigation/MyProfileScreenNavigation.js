@@ -5,10 +5,14 @@ import ChatScreen from '../../screens/my-profile/ChatScreen';
 import MyPostsScreen from '../../screens/my-profile/MyPostsScreen';
 import SettingsScreen from '../../screens/my-profile/SettingsScreen';
 import MyProfileEditScreen from '../../screens/my-profile/MyProfileEdit';
+import PetAdditionalInfoScreen from '../../screens/home/PetAdditionalInfoScreen';
+import PetLocationsScreen from '../../screens/home/PetLocationsScreen';
+import { makeStyles } from '@rneui/themed';
 
 const MyProfileStack = createNativeStackNavigator();
 
 const MyProfileScreenNavigation = () => {
+  const styles = useStyles();
   return (
     <MyProfileStack.Navigator>
       <MyProfileStack.Screen
@@ -34,6 +38,22 @@ const MyProfileScreenNavigation = () => {
         component={MyPostsScreen}
       />
       <MyProfileStack.Screen
+        component={PetAdditionalInfoScreen}
+        name='PetAdditionalInfo'
+        options={({ route }) => ({
+          headerTitle: route.params.name,
+          headerTitleStyle: styles.title,
+        })}
+      />
+      <MyProfileStack.Screen
+        component={PetLocationsScreen}
+        name='PetLocations'
+        options={({ route }) => ({
+          headerTitle: route.params.name,
+          headerTitleStyle: styles.title,
+        })}
+      />
+      <MyProfileStack.Screen
         options={{ headerTitle: 'Налогодувања' }}
         name='Settings'
         component={SettingsScreen}
@@ -46,5 +66,13 @@ const MyProfileScreenNavigation = () => {
     </MyProfileStack.Navigator>
   );
 };
+
+const useStyles = makeStyles((theme) => ({
+  title: {
+    fontSize: 22,
+    fontWeight: '800',
+    color: theme.colors.lightBlue600,
+  },
+}));
 
 export default MyProfileScreenNavigation;

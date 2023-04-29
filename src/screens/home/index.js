@@ -36,7 +36,7 @@ const HomeScreen = () => {
       <FlatList
         data={filteredLostPets}
         keyExtractor={(lostPet) => lostPet.id}
-        renderItem={({ item }) => <LostPetCard {...item} />}
+        renderItem={({ item }) => <LostPetCard {...item} shouldShowReportBtn />}
         style={styles.lostPetsList}
         ListHeaderComponent={
           <HorizontalBtnCategorySelection

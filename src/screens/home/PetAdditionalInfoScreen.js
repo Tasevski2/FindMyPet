@@ -15,9 +15,17 @@ const PetAdditionalInfoScreen = (props) => {
     lastSeenAtTime,
     seenAtLocations,
     lastSeenAtLocation,
+    shouldShowReportBtn,
+    shouldShowDeleteBtn,
   } = props.route.params;
+
   const navigation = useNavigation();
   const styles = useStyles();
+
+  const deletePost = () => {
+    console.log('Post deleted');
+    navigation.goBack();
+  };
 
   return (
     <AppLayout>
@@ -57,19 +65,30 @@ const PetAdditionalInfoScreen = (props) => {
                 })
               }
             />
-            <Button
-              title='Извести за нова локација'
-              containerStyle={styles.reportLocationBtnContainer}
-              buttonStyle={styles.reportLocationBtn}
-              titleStyle={styles.btnTitle}
-              onPress={() =>
-                navigation.navigate('ReportNewSeenLocationForPet', {
-                  name,
-                  lostAtLocation,
-                  seenAtLocations,
-                })
-              }
-            />
+            {shouldShowReportBtn && (
+              <Button
+                title='Извести за нова локација'
+                containerStyle={styles.reportLocationBtnContainer}
+                buttonStyle={styles.reportLocationBtn}
+                titleStyle={styles.btnTitle}
+                onPress={() =>
+                  navigation.navigate('ReportNewSeenLocationForPet', {
+                    name,
+                    lostAtLocation,
+                    seenAtLocations,
+                  })
+                }
+              />
+            )}
+            {shouldShowDeleteBtn && (
+              <Button
+                title='Избришија објавата'
+                containerStyle={styles.reportLocationBtnContainer}
+                buttonStyle={styles.reportLocationBtn}
+                titleStyle={styles.btnTitle}
+                onPress={deletePost}
+              />
+            )}
           </View>
         </View>
       </ScrollView>

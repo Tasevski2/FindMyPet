@@ -6,6 +6,7 @@ const LostPetCard = (props) => {
   const { id, name, photo, petOwner, description } = props;
   const navigation = useNavigation();
   const styles = useStyles();
+
   return (
     <Card
       wrapperStyle={styles.cardWrapper}
