@@ -4,6 +4,7 @@ const MyInput = ({
   value,
   onChangeText,
   errorMessage,
+  fontSize = 18,
   label,
   icon,
   reverseColor = false,
@@ -11,9 +12,10 @@ const MyInput = ({
 }) => {
   const { theme } = useTheme();
   const mainColor = reverseColor
-    ? theme.colors.lightBlue200
+    ? theme.colors.lightBlue500
     : theme.colors.white;
-  const styles = useStyles({ mainColor });
+  const styles = useStyles({ mainColor, fontSize });
+
   return (
     <Input
       label={label}
@@ -34,13 +36,14 @@ const MyInput = ({
   );
 };
 
-const useStyles = makeStyles((theme, { mainColor }) => ({
+const useStyles = makeStyles((theme, { mainColor, fontSize }) => ({
   labelStyle: {
     color: mainColor,
   },
   inputStyle: {
     color: mainColor,
     fontWeight: 'bold',
+    fontSize: fontSize,
   },
   inputContainerStyle: {
     borderColor: mainColor,

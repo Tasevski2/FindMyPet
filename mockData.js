@@ -19,7 +19,8 @@ export const mockLostPets = [
       phoneNumber: '123123123',
       fullName: 'Jana',
     },
-    description: 'Ve molam dokoku zabelezite...',
+    description:
+      "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.",
     type: 'dog',
     lostAtTime: new Date().toISOString(),
     lostAtLocation: {
@@ -29,6 +30,38 @@ export const mockLostPets = [
       },
       municipality: 'Aerodrom',
     },
+    seenAtLocations: [
+      {
+        coordinates: {
+          latitude: 41.990159,
+          longitude: 21.431591,
+        },
+        municipality: 'Centar',
+      },
+      {
+        coordinates: {
+          latitude: 41.987816,
+          longitude: 21.452648,
+        },
+        municipality: 'Aerodrom',
+      },
+      {
+        coordinates: {
+          latitude: 41.986027,
+          longitude: 21.437685,
+        },
+        municipality: 'Kisela Voda',
+      },
+      {
+        coordinates: {
+          latitude: 41.994381,
+          longitude: 21.436587,
+        },
+        municipality: 'Centar',
+      },
+    ],
+    lastSeenAtTime: new Date(Date.now() - 84000).toISOString(),
+    lastSeenAtLocation: 'bul. Partizanski Odredi br.0',
   },
   {
     id: 2,

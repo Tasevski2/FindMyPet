@@ -1,5 +1,5 @@
 import { useTheme } from '@rneui/themed';
-import { useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { StyleSheet } from 'react-native';
 import MapView, { Marker } from 'react-native-maps';
 
@@ -14,21 +14,28 @@ const INIT_CAMERA = {
   zoom: 10,
 };
 
-const Map = ({ markers = [], onMarkerPress, initCamera = INIT_CAMERA }) => {
+const Map = ({
+  markers = [],
+  onMarkerPress,
+  initCamera = INIT_CAMERA,
+  onMapPress,
+}) => {
   const mapRef = useRef();
   const { theme } = useTheme();
+
   return (
     <MapView
       style={styles.map}
       mapType='standard'
       ref={mapRef}
       initialCamera={initCamera}
+      onPress={(e) => onMapPress && onMapPress(e)}
     >
       {markers.map((marker) => (
         <Marker
           key={`${marker.coordinates.latitude},${marker.coordinates.longitude}`}
           coordinate={marker.coordinates}
-          pinColor={theme.colors.red500}
+          pinColor={marker.color ?? theme.colors.red500}
           onPress={
             () => onMarkerPress && onMarkerPress(mapRef)
             // mapRef.current.animateCamera(
@@ -46,6 +53,7 @@ const styles = StyleSheet.create({
   map: {
     width: '100%',
     height: '100%',
+    borderRadius: 10,
   },
 });
 
