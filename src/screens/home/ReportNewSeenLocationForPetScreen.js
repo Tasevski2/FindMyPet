@@ -88,7 +88,7 @@ const ReportNewSeenLocationForPetScreen = (props) => {
   );
 };
 
-const ChooseLocation = ({
+export const ChooseLocation = ({
   tabId,
   prevTabId,
   onNext,
@@ -131,7 +131,7 @@ const ChooseLocation = ({
   );
 };
 
-const ChooseImage = ({
+export const ChooseImage = ({
   tabId,
   prevTabId,
   onNext,
@@ -170,6 +170,7 @@ const ContactAndPreview = ({
   tabId,
   onNext,
   onBack,
+  submitData,
   initFullName,
   initPhoneNumber,
   petName,
@@ -201,6 +202,10 @@ const ContactAndPreview = ({
     onNext(tabId, { fullName, phoneNumber });
   };
 
+  useEffect(() => {
+    return () => submitData({ fullName, phoneNumber });
+  }, [fullName, phoneNumber]);
+
   return (
     <Animated.View
       entering={SlideInRight}
@@ -218,6 +223,7 @@ const ContactAndPreview = ({
             reverseColor
             fontSize={16}
             errorMessage={errors?.fullName}
+            containerStyle={styles.inputContainer}
           />
         </View>
         <View style={styles.row}>
@@ -228,10 +234,12 @@ const ContactAndPreview = ({
             reverseColor
             fontSize={16}
             errorMessage={errors?.phoneNumber}
+            containerStyle={styles.inputContainer}
           />
         </View>
       </View>
       {/* pet info */}
+      <View style={styles.hr}></View>
       <View>
         <View style={{ ...styles.row, opacity: 0.6 }}>
           <Text style={styles.key}>Изгубен миленик:</Text>
@@ -246,13 +254,12 @@ const ContactAndPreview = ({
       <View style={styles.mapContaiener}>
         <Map markers={[{ coordinates: location }]} />
       </View>
-      <View style={styles.hr}></View>
       <ActionsBtns tabId={tabId} onBack={onBack} onNext={onSend} />
     </Animated.View>
   );
 };
 
-const ActionsBtns = ({ tabId, onBack, onNext, disableNext }) => {
+export const ActionsBtns = ({ tabId, onBack, onNext, disableNext }) => {
   const styles = useStyles();
   const { theme } = useTheme();
 
@@ -276,12 +283,12 @@ const ActionsBtns = ({ tabId, onBack, onNext, disableNext }) => {
       )}
       {tabId === 2 ? (
         <Button
-          title={'Испрати'}
+          title={'Додади'}
           onPress={() => onNext(tabId)}
           icon={
             <Icon
-              type='font-awesome'
-              name='send'
+              type='ionicon'
+              name='add'
               color={theme.colors.white}
               style={{ marginLeft: 7 }}
             />
@@ -317,7 +324,7 @@ const ActionsBtns = ({ tabId, onBack, onNext, disableNext }) => {
   );
 };
 
-const useStyles = makeStyles((theme) => ({
+export const useStyles = makeStyles((theme) => ({
   card: {
     flex: 1,
     margin: 15,
@@ -377,14 +384,12 @@ const useStyles = makeStyles((theme) => ({
     borderRadius: 10,
   },
   contactOwner: {
-    marginBottom: 30,
+    marginBottom: 15,
   },
   row: {
     flexDirection: 'row',
     alignItems: 'center',
     width: '100%',
-    overflow: 'hidden',
-    // flexWrap: 'wrap', // TODO: najdi resenie kako da go namalis inputot i da go iskoristis flexWrap
   },
   key: {
     fontSize: 18,
@@ -398,12 +403,15 @@ const useStyles = makeStyles((theme) => ({
     color: theme.colors.lightBlue500,
   },
   hr: {
-    position: 'absolute',
-    top: 205,
+    marginLeft: -15,
+    marginBottom: 10,
     width: Dimensions.get('window').width,
     height: 1.2,
     opacity: 0.3,
     backgroundColor: theme.colors.lightBlue500,
+  },
+  inputContainer: {
+    flex: 1,
   },
 }));
 

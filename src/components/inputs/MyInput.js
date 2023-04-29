@@ -8,6 +8,8 @@ const MyInput = ({
   label,
   icon,
   reverseColor = false,
+  containerStyle = {},
+  keyboardType = 'default',
   ...rest
 }) => {
   const { theme } = useTheme();
@@ -30,6 +32,8 @@ const MyInput = ({
           <Icon type={icon.type} name={icon.name} color={mainColor} />
         )
       }
+      keyboardType={keyboardType}
+      containerStyle={containerStyle}
       {...styles}
       {...rest}
     />

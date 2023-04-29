@@ -1,5 +1,5 @@
 import { makeStyles } from '@rneui/themed';
-import { View } from 'react-native';
+import { Keyboard, TouchableWithoutFeedback, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 const AppLayout = ({ children, shouldSetInsetsPaddingTop = false }) => {
