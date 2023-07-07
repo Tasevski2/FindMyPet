@@ -5,6 +5,7 @@ import AppLayout from '../../layouts/AppLayout';
 import { mockMessages } from '../../../mockData';
 import MessageCard from '../../components/MessageCard';
 
+// TODO: this component will be finished for higher grade
 const MessagesScreen = () => {
   const [search, setSearch] = useState('');
   const [filteredMessages, setFilteredMessages] = useState(mockMessages);

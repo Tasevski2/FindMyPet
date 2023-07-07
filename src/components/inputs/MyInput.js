@@ -7,6 +7,7 @@ const MyInput = ({
   fontSize = 18,
   label,
   icon,
+  isIconANode = false,
   reverseColor = false,
   containerStyle = {},
   keyboardType = 'default',
@@ -27,10 +28,12 @@ const MyInput = ({
       selectionColor={mainColor}
       autoCapitalize='none'
       rightIcon={
-        icon?.type &&
-        icon?.name && (
-          <Icon type={icon.type} name={icon.name} color={mainColor} />
-        )
+        isIconANode
+          ? icon
+          : icon?.type &&
+            icon?.name && (
+              <Icon type={icon.type} name={icon.name} color={mainColor} />
+            )
       }
       keyboardType={keyboardType}
       containerStyle={containerStyle}

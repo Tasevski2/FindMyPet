@@ -4,6 +4,7 @@ import { makeStyles } from '@rneui/themed';
 import PetAdditionalInfoScreen from '../../screens/home/PetAdditionalInfoScreen';
 import PetLocationsScreen from '../../screens/home/PetLocationsScreen';
 import ReportNewSeenLocationForPetScreen from '../../screens/home/ReportNewSeenLocationForPetScreen';
+import PetSeenLocationInfoScreen from '../../screens/home/PetSeenLocationInfoScreen';
 
 const HomeStack = createNativeStackNavigator();
 
@@ -38,6 +39,14 @@ const HomeScreenNavigation = () => {
         name='ReportNewSeenLocationForPet'
         options={({ route }) => ({
           headerTitle: `Нова локација: ${route.params.name}`,
+          headerTitleStyle: styles.title,
+        })}
+      />
+      <HomeStack.Screen
+        component={PetSeenLocationInfoScreen}
+        name='PetSeenLocationInfoScreen'
+        options={({ route }) => ({
+          headerTitle: route.params.name,
           headerTitleStyle: styles.title,
         })}
       />

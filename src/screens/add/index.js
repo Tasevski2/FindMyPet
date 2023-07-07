@@ -20,25 +20,68 @@ import MyInput from '../../components/inputs/MyInput';
 import Map from '../../components/Map';
 
 import DropDownPicker from 'react-native-dropdown-picker';
-import { mockPetTypesDropdownChoices } from '../../../mockData';
 import { useValidation } from '../../hooks';
+import useGetPetTypes from '../../hooks/useGetPetTypes';
+import { capitalize } from 'lodash';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { API } from '../../api';
+import DateTimePicker from '@react-native-community/datetimepicker';
+
+const formInitState = {
+  location: null,
+  image: null,
+  name: '',
+  type: '',
+  description: '',
+  lostAtTime: new Date(),
+};
+
+const minReportLostPetDate = new Date(
+  new Date().getTime() - 1 * 24 * 60 * 60 * 1000
+);
 
 const AddScreen = () => {
+  const queryClient = useQueryClient();
+  const { data: petTypes, isLoading: isLoadingPetTypes } = useGetPetTypes();
   const [activeTab, setActiveTab] = useState(0);
   const prevTabRef = useRef(0);
-  const [formData, setFormData] = useState({
-    location: null,
-    image: null,
-    name: '',
-    type: mockPetTypesDropdownChoices[0].value,
-    description: '',
+  const [formData, setFormData] = useState(formInitState);
+  const createLostPetPostMutation = useMutation({
+    mutationFn: async ({ formDataToBeSend, fieldsToBeSend }) =>
+      (await API.createLostPetPost(formDataToBeSend, fieldsToBeSend)).data,
+    onSuccess: (res, userData) => {
+      queryClient.invalidateQueries({ queryKey: ['all-lost-pets'] });
+      queryClient.invalidateQueries({ queryKey: ['municipalities'] });
+      resetFormState();
+      setActiveTab(0);
+      prevTabRef.current = 0;
+    },
+    onError: (err) => console.log(err.message),
   });
+
+  const resetFormState = () => setFormData(formInitState);
 
   const onNext = (tabId, _formData) => {
     if (tabId === 2) {
       // _formData is send only by the last tab
       const lostPetData = { ...formData, ..._formData };
-      console.log({ lostPetData });
+
+      const fieldsToBeSend = {
+        petType: lostPetData.type,
+        name: lostPetData.name,
+        additionalInformation: lostPetData.description,
+        longitude: lostPetData.location.longitude,
+        latitude: lostPetData.location.latitude,
+        lostAtTime: lostPetData.lostAtTime.toISOString(),
+      };
+      const formDataToBeSend = new FormData();
+      formDataToBeSend.append('photo', {
+        uri: lostPetData.image.uri,
+        type: 'image/' + lostPetData.image.type,
+        name: 'lost-pet-' + Date.now() + '.' + lostPetData.image.type,
+      });
+
+      createLostPetPostMutation.mutate({ formDataToBeSend, fieldsToBeSend });
     } else {
       // _formData not needed
       prevTabRef.current = tabId;
@@ -58,6 +101,11 @@ const AddScreen = () => {
     setFormData((prevData) => ({ ...prevData, ..._formData }));
   };
 
+  useEffect(() => {
+    if (petTypes.length === 0) return;
+    setFormData((prev) => ({ ...prev, type: petTypes[0]?.value }));
+  }, [petTypes]);
+
   return (
     <AppLayout>
       {activeTab === 0 && (
@@ -68,6 +116,7 @@ const AddScreen = () => {
           onNext={onNext}
           onBack={onBack}
           submitData={updateFormData}
+          required
         />
       )}
       {activeTab === 1 && (
@@ -87,6 +136,7 @@ const AddScreen = () => {
           onNext={onNext}
           onBack={onBack}
           submitData={updateFormData}
+          petTypes={petTypes}
           initName={formData.name}
           initType={formData.type}
           initDescription={formData.description}
@@ -103,6 +153,7 @@ const PetInfo = ({
   onBack,
   submitData,
   initName,
+  petTypes,
   initType,
   initDescription,
   location,
@@ -113,6 +164,8 @@ const PetInfo = ({
   const [name, setName] = useState(initName);
   const [type, setType] = useState(initType);
   const [description, setDescription] = useState(initDescription);
+  const [dateLost, setDateLost] = useState(new Date());
+  const [timeLost, setTimeLost] = useState(new Date());
   const [isDropdownOpen, setDropdownVisi] = useState(false);
   const [errors, setErrors] = useState(null);
 
@@ -127,12 +180,34 @@ const PetInfo = ({
       return;
     }
 
-    onNext(tabId, { name, type, description });
+    onNext(tabId, {
+      name,
+      type,
+      description,
+      lostAtTime: getLostAtDateAndTime(),
+    });
+  };
+
+  const getLostAtDateAndTime = () => {
+    var year = dateLost.getFullYear();
+    var month = dateLost.getMonth();
+    var day = dateLost.getDate();
+    var hours = timeLost.getHours();
+    var minutes = timeLost.getMinutes();
+    var seconds = timeLost.getSeconds();
+
+    return new Date(year, month, day, hours, minutes, seconds);
   };
 
   useEffect(() => {
-    return () => submitData({ name, type, description });
-  }, [name, type, description]);
+    return () =>
+      submitData({
+        name,
+        type,
+        description,
+        lostAtTime: getLostAtDateAndTime(),
+      });
+  }, [name, type, description, dateLost, timeLost]);
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
@@ -161,9 +236,36 @@ const PetInfo = ({
                 setOpen={setDropdownVisi}
                 value={type}
                 setValue={setType}
-                items={mockPetTypesDropdownChoices}
+                placeholder='Изери тип на миленик'
+                items={petTypes.map((i) => ({
+                  label: capitalize(i.label),
+                  value: i.key,
+                }))}
                 {...styles.dropdown}
               />
+            </View>
+            <View style={{ ...styles.row, marginTop: 15 }}>
+              <Text style={{ ...styles.key }}>Изгбен на:</Text>
+              <View style={styles.row}>
+                {/* WE MUST HAVE 2 DATETIMEPICKER BECAUSE WITH MODE DATETIME IT ONLY WILL WORK ON IOS */}
+                <View style={{ width: 85, marginRight: 2 }}>
+                  <DateTimePicker
+                    value={dateLost}
+                    mode='date'
+                    minimumDate={minReportLostPetDate}
+                    maximumDate={new Date()}
+                    onChange={(e, date) => setDateLost(date)}
+                  />
+                </View>
+                <View style={{ width: 150 }}>
+                  <DateTimePicker
+                    value={timeLost}
+                    mode='time'
+                    maximumDate={new Date()}
+                    onChange={(e, date) => setTimeLost(date)}
+                  />
+                </View>
+              </View>
             </View>
             <View style={{ ...styles.row, marginTop: 20 }}>
               <Text style={styles.key}>Опис:</Text>
@@ -199,7 +301,7 @@ const PetInfo = ({
   );
 };
 
-const useStyles = makeStyles((theme) => ({
+export const useStyles = makeStyles((theme) => ({
   wrapper: {
     alignItems: 'center',
     justifyContent: 'center',

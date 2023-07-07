@@ -2,8 +2,11 @@ import { Text, TouchableWithoutFeedback, View } from 'react-native';
 import AppLayout from '../../layouts/AppLayout';
 import { Button, Card, Icon, makeStyles } from '@rneui/themed';
 import { useNavigation } from '@react-navigation/native';
+import { logout } from '../../store/actions';
+import { useDispatch } from 'react-redux';
 
 const SettingsScreen = () => {
+  const dispatch = useDispatch();
   const styles = useStyles();
   const navigation = useNavigation();
 
@@ -30,6 +33,7 @@ const SettingsScreen = () => {
           buttonStyle={styles.signOutButton}
           titleStyle={styles.signOutTitle}
           title='Одјави се'
+          onPress={() => dispatch(logout())}
         />
       </View>
     </AppLayout>

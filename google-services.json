@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "448937686603",
+    "project_id": "findmypet-5297e",
+    "storage_bucket": "findmypet-5297e.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:448937686603:android:540488aca4cd517c15bfce",
+        "android_client_info": {
+          "package_name": "com.finki.findmypet"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "448937686603-3fgopnntodn5uekml42lggm8o165v56t.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDBfv_s1V7csc-3IbiobB1_djnNO15hYFg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "448937686603-3fgopnntodn5uekml42lggm8o165v56t.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "448937686603-3phcjq0jguq14kh974e081bsldlvok8g.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.finki.findmypet"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

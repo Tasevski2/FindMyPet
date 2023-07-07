@@ -2,21 +2,19 @@ import { Card, Icon, makeStyles, useTheme } from '@rneui/themed';
 import { NotificationTypeEnum } from '../../enums';
 import { Text, TouchableWithoutFeedback } from 'react-native';
 
-const NotificationCard = ({ id, type, details, onPress }) => {
-  const styles = useStyles({ notificationType: type });
+const NotificationCard = ({ notification, onPress }) => {
+  const styles = useStyles({ notificationType: notification.type });
   return (
-    <TouchableWithoutFeedback
-      onPress={() => onPress && onPress({ id, type, details })}
-    >
+    <TouchableWithoutFeedback onPress={() => onPress && onPress(notification)}>
       <Card
         wrapperStyle={styles.cardWrapper}
         containerStyle={styles.cardContainer}
       >
-        {getLeftIcon(type, styles.leftIcon)}
-        <Text style={styles.details} numberOfLines={4}>
-          {details.description}
+        {getLeftIcon(notification.type, styles.leftIcon)}
+        <Text style={styles.body} numberOfLines={4}>
+          {notification.body}
         </Text>
-        {getRightIcon(type, styles.rightIcon)}
+        {getRightIcon(notification.type, styles.rightIcon)}
       </Card>
     </TouchableWithoutFeedback>
   );
@@ -108,7 +106,7 @@ const useStyles = makeStyles((theme) => ({
     margin: 5,
     backgroundColor: theme.colors.lightBlue50,
   },
-  details: {
+  body: {
     paddingHorizontal: 10,
     textAlign: 'center',
     flex: 1,

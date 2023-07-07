@@ -1,54 +1,80 @@
 import { View, Text, Image, ScrollView, Dimensions } from 'react-native';
 import AppLayout from '../../layouts/AppLayout';
-import { Button, Card, makeStyles } from '@rneui/themed';
+import { Button, makeStyles } from '@rneui/themed';
 import { useNavigation } from '@react-navigation/native';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { API } from '../../api';
+import { formatDate } from '../../utils/formatDate';
+import MyImage from '../../components/MyImage';
 
 const PetAdditionalInfoScreen = (props) => {
+  const queryClient = useQueryClient();
   const {
     id,
     name,
     photo,
     petOwner,
-    description,
+    additionalInformation,
     lostAtTime,
-    lostAtLocation,
-    lastSeenAtTime,
-    seenAtLocations,
+    lastSeenAtDate,
     lastSeenAtLocation,
+    lostAtLocation,
     shouldShowReportBtn,
     shouldShowDeleteBtn,
   } = props.route.params;
 
   const navigation = useNavigation();
   const styles = useStyles();
+  const deletePostMutation = useMutation({
+    mutationFn: async () => (await API.deteleLostPetPost(id)).data,
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ['all-lost-pets'],
+      });
+      queryClient.invalidateQueries({ queryKey: ['municipalities'] });
+      queryClient.invalidateQueries({ queryKey: ['my-lost-pets'] });
+      navigation.goBack();
+    },
+  });
 
   const deletePost = () => {
-    console.log('Post deleted');
-    navigation.goBack();
+    deletePostMutation.mutate();
   };
 
   return (
     <AppLayout>
       <ScrollView style={styles.container}>
         <View style={styles.wrapper}>
-          <Image
-            source={{ uri: photo }}
-            style={styles.image}
+          <MyImage
+            imagePath={photo}
+            containerStyle={{
+              width: '100%',
+              height: Dimensions.get('window').height * 0.3,
+            }}
             resizeMode='stretch'
           />
           <View style={styles.info}>
-            <Text style={styles.description}>{description}</Text>
+            <Text style={styles.additionalInformation}>
+              {additionalInformation}
+            </Text>
             <View style={styles.ownerInfo}>
               <Row keyName='Сопственик' value={petOwner.fullName} />
               <Row keyName='Телефон' value={petOwner.phoneNumber} />
             </View>
             <View style={styles.petInfo}>
-              <Row keyName='Изгубен на' value={lostAtTime} />
-              <Row keyName='Последно виден на' value={lastSeenAtTime} />
-              <Row
-                keyName='Последно видена локација'
-                value={lastSeenAtLocation}
-              />
+              <Row keyName='Изгубен на' value={formatDate(lostAtTime)} />
+              {lastSeenAtDate && (
+                <Row
+                  keyName='Последно виден на'
+                  value={formatDate(lastSeenAtDate)}
+                />
+              )}
+              {lastSeenAtLocation && (
+                <Row
+                  keyName='Последно виден на локација'
+                  value={lastSeenAtLocation.address}
+                />
+              )}
             </View>
           </View>
           <View style={styles.buttons}>
@@ -59,9 +85,9 @@ const PetAdditionalInfoScreen = (props) => {
               titleStyle={styles.btnTitle}
               onPress={() =>
                 navigation.navigate('PetLocations', {
+                  id,
                   name,
                   lostAtLocation,
-                  seenAtLocations,
                 })
               }
             />
@@ -73,9 +99,9 @@ const PetAdditionalInfoScreen = (props) => {
                 titleStyle={styles.btnTitle}
                 onPress={() =>
                   navigation.navigate('ReportNewSeenLocationForPet', {
+                    id,
                     name,
                     lostAtLocation,
-                    seenAtLocations,
                   })
                 }
               />
@@ -119,15 +145,10 @@ const useStyles = makeStyles((theme) => ({
     padding: 15,
     paddingBottom: 25,
   },
-  image: {
-    width: '100%',
-    height: Dimensions.get('window').height * 0.3,
-    borderRadius: 10,
-  },
   info: {
     marginVertical: 15,
   },
-  description: {
+  additionalInformation: {
     marginBottom: 20,
     fontSize: 16,
     fontWeight: '500',

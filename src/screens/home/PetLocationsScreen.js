@@ -2,11 +2,36 @@ import { Card, Icon, makeStyles, useTheme } from '@rneui/themed';
 import AppLayout from '../../layouts/AppLayout';
 import { Text, View } from 'react-native';
 import Map from '../../components/Map';
+import { useQuery } from '@tanstack/react-query';
+import { API } from '../../api';
+import { useNavigation } from '@react-navigation/native';
+import { useMemo } from 'react';
 
 const PetLocationsScreen = (props) => {
   const styles = useStyles();
+  const navigation = useNavigation();
   const { theme } = useTheme();
-  const { lostAtLocation, seenAtLocations } = props.route.params;
+  const { id, lostAtLocation, name } = props.route.params;
+  const { data: seenPetLocations, isLoading: isLoadingSeenPetLocations } =
+    useQuery({
+      placeholderData: [],
+      queryKey: ['all-pet-locations', id],
+      queryFn: async () => (await API.getLostPetSeenLocations(id)).data,
+    });
+  const seenPetsMarkers = useMemo(
+    () =>
+      seenPetLocations.map((s) => ({
+        coordinates: s.seenAtLocation.coordinates,
+        callbackItem: s,
+      })),
+    [seenPetLocations]
+  );
+  console.log({ seenPetLocations });
+  const onMarkerPress = (item) => {
+    console.log({ item });
+    if (!item?.id) return;
+    navigation.navigate('PetSeenLocationInfoScreen', { ...item, name });
+  };
 
   return (
     <AppLayout>
@@ -17,9 +42,10 @@ const PetLocationsScreen = (props) => {
         <View style={styles.mapWrapper}>
           <Map
             markers={[
-              ...seenAtLocations,
+              ...seenPetsMarkers,
               { ...lostAtLocation, color: theme.colors.blue900 },
             ]}
+            onMarkerPress={onMarkerPress}
           />
         </View>
         <View style={styles.legend}>

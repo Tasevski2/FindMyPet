@@ -1,9 +1,10 @@
 import { useNavigation } from '@react-navigation/native';
 import { Card, Icon, makeStyles } from '@rneui/themed';
-import { Image, Text, TouchableWithoutFeedback, View } from 'react-native';
+import { Text, TouchableWithoutFeedback, View } from 'react-native';
+import MyImage from './MyImage';
 
 const LostPetCard = (props) => {
-  const { id, name, photo, petOwner, description } = props;
+  const { id, name, photo, petOwner, additionalInformation } = props;
   const navigation = useNavigation();
   const styles = useStyles();
 
@@ -12,7 +13,7 @@ const LostPetCard = (props) => {
       wrapperStyle={styles.cardWrapper}
       containerStyle={styles.cardContainer}
     >
-      <Image source={{ uri: photo }} style={styles.image} />
+      <MyImage imagePath={photo} containerStyle={{ height: '100%' }} />
       <View style={styles.details}>
         <Text style={styles.title} numberOfLines={1}>
           {name}
@@ -20,8 +21,8 @@ const LostPetCard = (props) => {
         <Text style={styles.phoneNumber} numberOfLines={1}>
           {petOwner?.phoneNumber}
         </Text>
-        <Text style={styles.description} numberOfLines={7}>
-          {description}
+        <Text style={styles.additionalInformation} numberOfLines={7}>
+          {additionalInformation}
         </Text>
       </View>
       <TouchableWithoutFeedback
@@ -49,11 +50,6 @@ const useStyles = makeStyles((theme) => ({
     paddingVertical: 10,
     borderRadius: 10,
   },
-  image: {
-    flex: 1,
-    height: '100%',
-    borderRadius: 10,
-  },
   details: {
     flex: 1,
     marginLeft: 10,
@@ -75,7 +71,7 @@ const useStyles = makeStyles((theme) => ({
     color: theme.colors.blue900,
     marginBottom: 10,
   },
-  description: {
+  additionalInformation: {
     fontSize: 14,
     fontWeight: 500,
     textAlign: 'left',

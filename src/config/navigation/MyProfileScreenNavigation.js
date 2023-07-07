@@ -8,6 +8,7 @@ import MyProfileEditScreen from '../../screens/my-profile/MyProfileEdit';
 import PetAdditionalInfoScreen from '../../screens/home/PetAdditionalInfoScreen';
 import PetLocationsScreen from '../../screens/home/PetLocationsScreen';
 import { makeStyles } from '@rneui/themed';
+import PetSeenLocationInfoScreen from '../../screens/home/PetSeenLocationInfoScreen';
 
 const MyProfileStack = createNativeStackNavigator();
 
@@ -62,6 +63,14 @@ const MyProfileScreenNavigation = () => {
         options={{ headerTitle: 'Профил' }}
         name='MyProfileEdit'
         component={MyProfileEditScreen}
+      />
+      <MyProfileStack.Screen
+        component={PetSeenLocationInfoScreen}
+        name='PetSeenLocationInfoScreen'
+        options={({ route }) => ({
+          headerTitle: route.params.name,
+          headerTitleStyle: styles.title,
+        })}
       />
     </MyProfileStack.Navigator>
   );

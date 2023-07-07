@@ -1,11 +1,15 @@
-import { useState } from 'react';
-import { mockLostPets } from '../../../mockData';
 import LostPetCard from '../../components/LostPetCard';
 import AppLayout from '../../layouts/AppLayout';
 import { FlatList } from 'react-native';
+import { useQuery } from '@tanstack/react-query';
+import { API } from '../../api';
 
 const MyPostsScreen = () => {
-  const [myLostPets, setMyLostPets] = useState(mockLostPets);
+  const { data: myLostPets, isLoading: isLoadingMyLostPets } = useQuery({
+    placeholderData: [],
+    queryKey: ['my-lost-pets'],
+    queryFn: async () => (await API.getMyLostPets()).data,
+  });
 
   return (
     <AppLayout>

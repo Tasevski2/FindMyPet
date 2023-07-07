@@ -1,7 +1,8 @@
-import { useTheme } from '@rneui/themed';
-import { useEffect, useRef, useState } from 'react';
-import { StyleSheet } from 'react-native';
+import { Button, useTheme } from '@rneui/themed';
+import { useRef } from 'react';
+import { StyleSheet, View } from 'react-native';
 import MapView, { Marker } from 'react-native-maps';
+import * as Location from 'expo-location';
 
 const INIT_CAMERA = {
   center: {
@@ -19,42 +20,99 @@ const Map = ({
   onMarkerPress,
   initCamera = INIT_CAMERA,
   onMapPress,
+  allowCurrentLocation = false,
+  currentLocationCb,
 }) => {
   const mapRef = useRef();
   const { theme } = useTheme();
 
+  const getCurrentPosition = async () => {
+    let { status } = await Location.requestForegroundPermissionsAsync();
+    if (status !== 'granted') {
+      return;
+    }
+
+    let location = await Location.getCurrentPositionAsync({});
+    const coordinates = {
+      latitude: location.coords.latitude,
+      longitude: location.coords.longitude,
+    };
+
+    mapRef?.current?.animateCamera(
+      { center: coordinates, altitude: 1000, zoom: 15 },
+      1
+    );
+    currentLocationCb &&
+      currentLocationCb({
+        coordinates,
+      });
+  };
+
   return (
-    <MapView
-      style={styles.map}
-      mapType='standard'
-      ref={mapRef}
-      initialCamera={initCamera}
-      onPress={(e) => onMapPress && onMapPress(e)}
-    >
-      {markers.map((marker) => (
-        <Marker
-          key={`${marker.coordinates.latitude},${marker.coordinates.longitude}`}
-          coordinate={marker.coordinates}
-          pinColor={marker.color ?? theme.colors.red500}
-          onPress={
-            () => onMarkerPress && onMarkerPress(mapRef)
-            // mapRef.current.animateCamera(
-            //   { center: marker.coordinates, altitude: 1000, zoom 15 },
-            //   1
-            // )
-          }
+    <View>
+      <MapView
+        style={styles.map}
+        mapType='standard'
+        ref={mapRef}
+        initialCamera={initCamera}
+        onPress={(e) => onMapPress && onMapPress(e)}
+      >
+        {markers.map((marker) => (
+          <Marker
+            key={`${marker.coordinates.latitude},${marker.coordinates.longitude}`}
+            coordinate={marker.coordinates}
+            pinColor={marker.color ?? theme.colors.red500}
+            onPress={
+              // TODO change the first parameter of onMarkerPress to marker
+              () => onMarkerPress && onMarkerPress(marker.callbackItem, mapRef)
+              // mapRef.current.animateCamera(
+              //   { center: marker.coordinates, altitude: 1000, zoom: 15 },
+              //   1
+              // )
+            }
+          />
+        ))}
+      </MapView>
+      {allowCurrentLocation && (
+        <Button
+          title='Моменталата локација'
+          onPress={getCurrentPosition}
+          titleStyle={styles.getCurrentPositionTitle}
+          containerStyle={styles.getCurrentPositionContainer}
+          buttonStyle={{
+            borderRadius: 10,
+          }}
+          icon={{
+            type: 'font-awesome-5',
+            name: 'location-arrow',
+            color: 'white',
+            size: 12,
+          }}
+          iconPosition='left'
         />
-      ))}
-    </MapView>
+      )}
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
+  container: {
+    width: '100%',
+    height: '100%',
+    position: 'relative',
+  },
   map: {
     width: '100%',
     height: '100%',
     borderRadius: 10,
   },
+  getCurrentPositionContainer: {
+    position: 'absolute',
+    bottom: 0,
+    right: 0,
+    zIndex: 10,
+  },
+  getCurrentPositionTitle: { fontSize: 12, borderRadius: 10, color: 'white' },
 });
 
 export default Map;

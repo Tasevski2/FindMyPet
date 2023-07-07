@@ -1,2 +1,5 @@
-export const INCREMENT = 'INCREMENT';
-export const DECREMENT = 'DECREMENT';
+export const LOGIN = 'LOGIN';
+export const LOGOUT = 'LOGOUT';
+export const FAILED_TO_RETRIEVE_USER = 'FAILED_TO_RETRIEVE_USER';
+
+export const UPDATE_USER_DETAILS = 'UPDATE_USER_DETAILS';

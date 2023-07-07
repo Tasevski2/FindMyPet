@@ -16,7 +16,7 @@ const NotificationsScreenNavigation = () => {
       />
       <NotificationsStack.Screen
         options={({ route }) => ({
-          title: route.params.details.petName,
+          title: route.params.seenPetDTO.lostPet.name,
           headerTitleStyle: styles.title,
         })}
         name='NewSeenLocationMessage'

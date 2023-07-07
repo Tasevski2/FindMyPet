@@ -1,22 +1,31 @@
 import { FlatList, StyleSheet } from 'react-native';
 import { NotificationTypeEnum } from '../../../enums';
-import { mockNotifications } from '../../../mockData';
 import NotificationCard from '../../components/NotificationCard';
 import AppLayout from '../../layouts/AppLayout';
+import { useQuery } from '@tanstack/react-query';
+import { API } from '../../api';
 
 const NotificationsScreen = ({ navigation }) => {
+  const { data: notifications, isLoading: isLoadingNotifications } = useQuery({
+    placeholderData: [],
+    queryKey: ['notifications'],
+    queryFn: async () => (await API.getNotifications()).data,
+  });
+
   const onCardPress = (notification) => {
     if (notification.type !== NotificationTypeEnum.NEW_SEEN_LOCATION) return;
     navigation.navigate('NewSeenLocationMessage', notification);
   };
 
+  console.log({ notifications, isLoadingNotifications });
+
   return (
     <AppLayout>
       <FlatList
-        data={mockNotifications}
-        keyExtractor={(notification) => notification.id}
+        data={notifications}
+        key={(item) => item.id}
         renderItem={({ item }) => (
-          <NotificationCard {...item} onPress={onCardPress} />
+          <NotificationCard notification={item} onPress={onCardPress} />
         )}
         style={styles.lostPetsList}
       />

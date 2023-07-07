@@ -16,11 +16,10 @@ const TakeOrChoosePhoto = ({ reverseColor = false, setImage, space = 10 }) => {
       quality: 1,
     });
 
-    console.log(result);
-
     if (result.canceled) return;
-
-    setImage(result.assets[0].uri);
+    const uri = result.assets[0].uri;
+    const type = uri.split('.').at(-1);
+    setImage({ uri, type });
   };
 
   const takeImage = async () => {

@@ -13,9 +13,19 @@ import TakeOrChoosePhoto from '../../components/TakeOrChoosePhoto';
 import MyInput from '../../components/inputs/MyInput';
 import { useValidation } from '../../hooks';
 import { PHONE_NUMBER_LENGTH } from '../../utils/consts';
+import { API } from '../../api';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useNavigation } from '@react-navigation/native';
+import DateTimePicker from '@react-native-community/datetimepicker';
+
+const minReportSeenPetDate = new Date(
+  new Date().getTime() - 1 * 24 * 60 * 60 * 1000
+);
 
 const ReportNewSeenLocationForPetScreen = (props) => {
-  const { name } = props.route.params;
+  const queryClient = useQueryClient();
+  const { name, id } = props.route.params;
+  const navigation = useNavigation();
   const user = useSelector((store) => store.user.user);
   const [activeTab, setActiveTab] = useState(0);
   const prevTabRef = useRef(0);
@@ -24,13 +34,42 @@ const ReportNewSeenLocationForPetScreen = (props) => {
     image: null,
     fullName: user.fullName,
     phoneNumber: user.phoneNumber,
+    seenAtTime: new Date(),
+  });
+  const reportLostPetMutation = useMutation({
+    mutationFn: async ({ formDataToBeSend, fieldsToBeSend }) =>
+      (
+        await API.reportForNewLocationOfLostPet(
+          formDataToBeSend,
+          fieldsToBeSend
+        )
+      ).data,
+    onSuccess: (res, userData) => {
+      queryClient.invalidateQueries({ queryKey: ['all-pet-locations', id] });
+      navigation.goBack();
+    },
+    onError: (err) => console.log(err),
   });
 
   const onNext = (tabId, _formData) => {
     if (tabId === 2) {
       // _formData is send only by the last tab
-      const lostPetData = { ...formData, ..._formData };
-      console.log({ lostPetData });
+      const seenPetData = { ...formData, ..._formData };
+      const fieldsToBeSend = {
+        lostPetId: id,
+        seenAtTime: seenPetData.seenAtTime.toISOString(),
+        longitude: seenPetData.location.longitude,
+        latitude: seenPetData.location.latitude,
+      };
+      const formDataToBeSend = new FormData();
+      if (seenPetData.image) {
+        formDataToBeSend.append('photo', {
+          uri: seenPetData.image.uri,
+          type: 'image/' + seenPetData.image.type,
+          name: 'seen-pet-' + Date.now() + '.' + seenPetData.image.type,
+        });
+      }
+      reportLostPetMutation.mutate({ formDataToBeSend, fieldsToBeSend });
     } else {
       // _formData not needed
       prevTabRef.current = tabId;
@@ -105,6 +144,7 @@ export const ChooseLocation = ({
 
   const onMapPress = (event) => {
     const coordinates = event.nativeEvent.coordinate;
+    console.log({ onMapPress: coordinates });
     setLocation(coordinates);
   };
 
@@ -119,6 +159,11 @@ export const ChooseLocation = ({
         <Map
           onMapPress={onMapPress}
           markers={location ? [{ coordinates: location }] : []}
+          allowCurrentLocation
+          currentLocationCb={({ coordinates }) => {
+            console.log({ onCurrentPress: coordinates });
+            setLocation(coordinates);
+          }}
         />
       </View>
       <ActionsBtns
@@ -138,6 +183,7 @@ export const ChooseImage = ({
   onBack,
   submitData,
   initImage,
+  required = false,
 }) => {
   const styles = useStyles();
   const [image, setImage] = useState(initImage);
@@ -154,14 +200,32 @@ export const ChooseImage = ({
     >
       <Text style={styles.cardTitle}>Слика:</Text>
       <TakeOrChoosePhoto setImage={setImage} />
-      {image && (
-        <Image
-          source={{ uri: image }}
-          style={styles.image}
-          resizeMode='stretch'
-        />
-      )}
-      <ActionsBtns tabId={tabId} onBack={onBack} onNext={onNext} />
+      <View style={styles.imageWrapper}>
+        {image && (
+          <>
+            <Image
+              source={{ uri: image.uri }}
+              style={styles.image}
+              resizeMode='stretch'
+            />
+            <Icon
+              containerStyle={styles.removeImageContainer}
+              style={styles.removeImageIcon}
+              type='material-community'
+              name='close-thick'
+              color={'red'}
+              size={35}
+              onPress={() => setImage(null)}
+            />
+          </>
+        )}
+      </View>
+      <ActionsBtns
+        tabId={tabId}
+        onBack={onBack}
+        onNext={onNext}
+        disableNext={required && !image}
+      />
     </Animated.View>
   );
 };
@@ -180,6 +244,8 @@ const ContactAndPreview = ({
   const { validateLength } = useValidation();
   const [fullName, setFullName] = useState(initFullName);
   const [phoneNumber, setPhoneNumber] = useState(initPhoneNumber);
+  const [dateSeen, setDateSeen] = useState(new Date());
+  const [timeSeen, setTimeSeen] = useState(new Date());
   const [errors, setErrors] = useState();
 
   const onSend = () => {
@@ -199,12 +265,28 @@ const ContactAndPreview = ({
       return;
     }
 
-    onNext(tabId, { fullName, phoneNumber });
+    onNext(tabId, {
+      fullName,
+      phoneNumber,
+      seenAtTime: getSeenAtDateAndTime(),
+    });
+  };
+
+  const getSeenAtDateAndTime = () => {
+    var year = dateSeen.getFullYear();
+    var month = dateSeen.getMonth();
+    var day = dateSeen.getDate();
+    var hours = timeSeen.getHours();
+    var minutes = timeSeen.getMinutes();
+    var seconds = timeSeen.getSeconds();
+
+    return new Date(year, month, day, hours, minutes, seconds);
   };
 
   useEffect(() => {
-    return () => submitData({ fullName, phoneNumber });
-  }, [fullName, phoneNumber]);
+    return () =>
+      submitData({ fullName, phoneNumber, seenAtTime: getSeenAtDateAndTime() });
+  }, [fullName, phoneNumber, dateSeen, timeSeen]);
 
   return (
     <Animated.View
@@ -236,6 +318,29 @@ const ContactAndPreview = ({
             errorMessage={errors?.phoneNumber}
             containerStyle={styles.inputContainer}
           />
+        </View>
+      </View>
+      <View style={{ ...styles.row, marginBottom: 15 }}>
+        <Text style={{ ...styles.key }}>Виден на:</Text>
+        <View style={styles.row}>
+          {/* WE MUST HAVE 2 DATETIMEPICKER BECAUSE WITH MODE DATETIME IT ONLY WILL WORK ON IOS */}
+          <View style={{ width: 85, marginRight: 2 }}>
+            <DateTimePicker
+              value={dateSeen}
+              mode='date'
+              minimumDate={minReportSeenPetDate}
+              maximumDate={new Date()}
+              onChange={(e, date) => setDateSeen(date)}
+            />
+          </View>
+          <View style={{ width: 150 }}>
+            <DateTimePicker
+              value={timeSeen}
+              mode='time'
+              maximumDate={new Date()}
+              onChange={(e, date) => setTimeSeen(date)}
+            />
+          </View>
         </View>
       </View>
       {/* pet info */}
@@ -377,15 +482,29 @@ export const useStyles = makeStyles((theme) => ({
     flex: 1,
     marginBottom: 60,
   },
-  image: {
+  imageWrapper: {
     flex: 1,
     marginTop: 20,
     marginBottom: 60,
+    position: 'relative',
+  },
+  image: {
     borderRadius: 10,
+    width: '100%',
+    height: '100%',
+    zIndex: 1,
   },
-  contactOwner: {
-    marginBottom: 15,
+  removeImageContainer: {
+    position: 'absolute',
+    right: 0,
+    top: 0,
+    zIndex: 10,
+    padding: 5,
+    backgroundColor: 'white',
+    borderRadius: 50,
   },
+  removeImageIcon: {},
+  contactOwner: {},
   row: {
     flexDirection: 'row',
     alignItems: 'center',

@@ -13,14 +13,15 @@ import {
   Dimensions,
   TouchableWithoutFeedback,
 } from 'react-native';
-import AppLayout from '../../layouts/AppLayout';
 import { useSelector } from 'react-redux';
+import AppLayout from '../../layouts/AppLayout';
+import defaultAvatar from '../../assets/avatar.png';
 
 const formatPhoneNumber = (number = '') => {
   let res = [];
   let i = 0;
   const _number = String(number);
-  while (i < number.length) {
+  while (i < number?.length) {
     let t = '';
     for (let j = 0; j < 3; j++) {
       if (i + j < number.length) {
@@ -34,15 +35,15 @@ const formatPhoneNumber = (number = '') => {
 };
 
 const bottomNavigation = [
-  {
-    getIconData: (colors) => ({
-      type: 'material',
-      name: 'chat',
-      color: colors.greenA400,
-    }),
-    label: 'Пораки',
-    navigateTo: 'Messages',
-  },
+  // {
+  //   getIconData: (colors) => ({
+  //     type: 'material',
+  //     name: 'chat',
+  //     color: colors.greenA400,
+  //   }),
+  //   label: 'Пораки',
+  //   navigateTo: 'Messages',
+  // },
   {
     getIconData: (colors) => ({
       type: 'material-community',
@@ -67,11 +68,12 @@ const MyProfileScreen = ({ navigation }) => {
   const user = useSelector((store) => store.user.user);
   const styles = useStyles();
   const { theme } = useTheme();
+
   return (
     <AppLayout shouldSetInsetsPaddingTop>
       <ScrollView contentContainerStyle={styles.container}>
         <Avatar
-          source={user.photo}
+          source={user.photo ?? defaultAvatar}
           size={200}
           rounded
           containerStyle={styles.avatarContainer}

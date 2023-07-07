@@ -1,47 +1,39 @@
 import { FlatList } from 'react-native';
+import { useQuery } from '@tanstack/react-query';
 import { makeStyles } from '@rneui/themed';
 import AppLayout from '../../layouts/AppLayout';
 import SearchBarHeader from '../../components/SearchBarHeader';
-import { useEffect, useState } from 'react';
-import { mockLostPets, mockPetTypes } from '../../../mockData';
+import { useState } from 'react';
 import LostPetCard from '../../components/LostPetCard';
 import HorizontalBtnCategorySelection from '../../components/HorizontalBtnCategorySelection';
+import { API } from '../../api';
+import useGetPetTypes from '../../hooks/useGetPetTypes';
 
 const HomeScreen = () => {
   const styles = useStyles();
   const [search, setSearch] = useState('');
-  const [petTypes, setPetTypes] = useState([]);
-  const [filteredLostPets, setFilteredLostPets] = useState(mockLostPets || []);
-
-  const onSearchOrTypeChange = () => {
-    const _search = search.trim().toLowerCase();
-    const isInPetTypes = petTypes.length
-      ? (type) => petTypes.includes(type)
-      : () => true;
-    const _filtered = mockLostPets.filter(
-      (pet) =>
-        pet.name.toLowerCase().includes(_search) && isInPetTypes(pet.type)
-    );
-    setFilteredLostPets(_filtered);
-  };
-
-  useEffect(() => {
-    onSearchOrTypeChange();
-  }, [search, petTypes]);
+  const [selectedPetTypes, setSelectedPetTypes] = useState([]);
+  const { data: pets, isLoading: isLoadingPets } = useQuery({
+    placeholderData: [],
+    queryKey: ['all-lost-pets', search, selectedPetTypes],
+    queryFn: async () =>
+      (await API.getLostPets({ search: search, types: selectedPetTypes })).data,
+  });
+  const { data: petTypes, isLoading: isLoadingPetTypes } = useGetPetTypes();
 
   return (
     <AppLayout>
       <SearchBarHeader value={search} onChangeText={setSearch} />
 
       <FlatList
-        data={filteredLostPets}
+        data={pets}
         keyExtractor={(lostPet) => lostPet.id}
         renderItem={({ item }) => <LostPetCard {...item} shouldShowReportBtn />}
         style={styles.lostPetsList}
         ListHeaderComponent={
           <HorizontalBtnCategorySelection
-            categories={mockPetTypes}
-            onChange={setPetTypes}
+            categories={petTypes}
+            onChange={setSelectedPetTypes}
           />
         }
       />

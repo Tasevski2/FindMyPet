@@ -21,7 +21,7 @@ export const mockLostPets = [
     },
     description:
       "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.",
-    type: 'dog',
+    type: 'DOG',
     lostAtTime: new Date().toDateString(),
     lostAtLocation: {
       coordinates: {
@@ -72,7 +72,7 @@ export const mockLostPets = [
       phoneNumber: '123123123',
     },
     description: 'Ve molam dokoku zabelezite...',
-    type: 'parrot',
+    type: 'BIRD',
   },
   {
     id: 3,
@@ -83,7 +83,7 @@ export const mockLostPets = [
       phoneNumber: '123123123',
     },
     description: 'Ve molam dokoku zabelezite...',
-    type: 'dog',
+    type: 'DOG',
   },
   {
     id: 4,
@@ -93,7 +93,7 @@ export const mockLostPets = [
       phoneNumber: '123123123',
     },
     description: 'Ve molam dokoku zabelezite...',
-    type: 'cat',
+    type: 'CAT',
   },
 ];
 
@@ -109,13 +109,34 @@ export const mockPetTypes = [
 ];
 
 export const mockMunicipalities = [
-  'Aerodrom',
-  'Centar',
-  'Karpos 1',
-  'Karpos 2',
-  'Kisela Voda',
-  'Cair',
-  'Gazi Baba',
+  {
+    key: 'Aerodrom',
+    label: 'Aerodrom',
+  },
+  {
+    key: 'Centar',
+    label: 'Centar',
+  },
+  {
+    key: 'Karpos 1',
+    label: 'Karpos 1',
+  },
+  {
+    key: 'Karpos 2',
+    label: 'Karpos 2',
+  },
+  {
+    key: 'Kisela Voda',
+    label: 'Kisela Voda',
+  },
+  {
+    key: 'Gazi Baba',
+    label: 'Gazi Baba',
+  },
+  {
+    key: 'Cair',
+    label: 'Cair',
+  },
 ];
 
 export const mockLostPetsMarkers = [
@@ -160,54 +181,24 @@ export const mockNotifications = [
   {
     id: 1,
     type: 'NEW_SEEN_LOCATION',
-    details: {
-      description: 'Vasiot milenik e zabelezan na nova lokacija!',
-      petName: 'Niki',
-      seenBy: 'Viktor',
-      phoneNumber: '123123123',
-      location: 'bul. Jane Sandanski',
-      coordinates: { latitude: 41.988972, longitude: 21.456844 },
-    },
-  },
-  {
-    id: 2,
-    type: 'INFORMATION',
-    details: { description: 'Vasiot milenik e zabelezan na nova lokacija!' },
-  },
-  {
-    id: 3,
-    type: 'NEW_MESSAGE',
-    details: { description: 'Vasiot milenik e zabelezan na nova lokacija!' },
-  },
-  {
-    id: 4,
-    type: 'INFORMATION',
-    details: { description: 'Vasiot milenik e zabelezan na nova lokacija!' },
-  },
-  {
-    id: 5,
-    type: 'NEW_SEEN_LOCATION',
-    details: {
-      description: 'Vasiot milenik e zabelezan na nova lokacija!',
-      petName: 'Fifi',
-      seenBy: 'Jana',
-      phoneNumber: '321321321',
-      location: 'ul. Rumena Hadzipanzova',
-      coordinates: {
-        latitude: 41.93820461311482,
-        longitude: 21.512321673610032,
+    title: 'Vasiot milenik e zabelezan na nova lokacija!', // title i body se isti
+    body: 'Vasiot milenik e zabelezan na nova lokacija!',
+    seenPetDTO: {
+      reportedBy: {
+        fullName: 'Viktor Tasevski',
+        phoneNumber: '123123123',
+      },
+      seenAtTime: 'Thu Jun 29 2023 15:46:02 GMT+0200',
+      seenAtLocation: {
+        coordinates: { longitude: 21.456844, latitude: 41.988972 },
+        municipality: 'Aerodrom',
+        address: 'bul. Jane Sandanski',
+        photo: '', // ova kje bide string od kade da se fetchne slikata
       },
     },
-  },
-  {
-    id: 6,
-    type: 'NEW_MESSAGE',
-    details: { description: 'Vasiot milenik e zabelezan na nova lokacija!' },
-  },
-  {
-    id: 7,
-    type: 'NEW_MESSAGE',
-    details: { description: 'Vasiot milenik e zabelezan na nova lokacija!' },
+    lostPet: {
+      name: 'Niki',
+    },
   },
 ];
 

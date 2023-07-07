@@ -1,36 +1,59 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { View } from 'react-native';
 import AppLayout from '../../layouts/AppLayout';
-import { mockLostPetsMarkers, mockMunicipalities } from '../../../mockData';
 import HorizontalBtnCategorySelection from '../../components/HorizontalBtnCategorySelection';
 import Map from '../../components/Map';
 import { makeStyles } from '@rneui/themed';
+import { API } from '../../api';
+import { useQuery } from '@tanstack/react-query';
+import { useNavigation } from '@react-navigation/native';
 
 const MapScreen = () => {
   const styles = useStyles();
-  const [municipalities, setMunicipalities] = useState([]);
-  const [filteredLostPetsMarkers, setFilteredLostPetsMarkers] =
-    useState(mockLostPetsMarkers);
+  const navigation = useNavigation();
+  const [selectedMunicipalities, setMunicipalities] = useState([]);
+  const { data: pets, isLoading: isLoadingPets } = useQuery({
+    placeholderData: [],
+    queryKey: ['all-lost-pets', selectedMunicipalities],
+    queryFn: async () =>
+      (await API.getLostPets({ municipalities: selectedMunicipalities })).data,
+  });
+  const { data: municipalities, isLoading: isLoadingMunicipalities } = useQuery(
+    {
+      queryKey: ['municipalities'],
+      queryFn: async () => {
+        const _municipalities = (await API.getMunicipalities()).data;
+        return _municipalities.map((m) => ({
+          key: m,
+          label: m,
+        }));
+      },
+    }
+  );
+  const lostPetsMarkers = useMemo(
+    () =>
+      pets.map((p) => ({
+        coordinates: p.lostAtLocation.coordinates,
+        callbackItem: p,
+      })),
+    [pets]
+  );
 
-  const onMunicipalitiesChange = (_municipalities) => {
-    const markers = !_municipalities.length
-      ? mockLostPetsMarkers
-      : mockLostPetsMarkers.filter((m) =>
-          _municipalities.includes(m.municipality)
-        );
-
-    setMunicipalities(_municipalities);
-    setFilteredLostPetsMarkers(markers);
+  const onMarkerPress = (item, mapRef) => {
+    navigation.navigate('HomeTab', {
+      screen: 'PetAdditionalInfo',
+      params: { ...item, shouldShowReportBtn: true },
+    });
   };
 
   return (
     <AppLayout shouldSetInsetsPaddingTop>
       <HorizontalBtnCategorySelection
-        categories={mockMunicipalities}
-        onChange={onMunicipalitiesChange}
+        categories={municipalities}
+        onChange={setMunicipalities}
       />
       <View style={styles.mapContainer}>
-        <Map markers={filteredLostPetsMarkers} />
+        <Map markers={lostPetsMarkers} onMarkerPress={onMarkerPress} />
       </View>
     </AppLayout>
   );

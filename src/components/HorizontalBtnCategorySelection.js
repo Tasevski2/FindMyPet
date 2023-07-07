@@ -12,12 +12,12 @@ const HorizontalBtnCategorySelection = ({
   const [_selected, setSelected] = useState(selected);
 
   const onPress = (category) => {
-    const isSelected = _selected.includes(category);
+    const isSelected = _selected.includes(category.key);
     let _s = [..._selected];
     if (isSelected) {
-      _s = _s.filter((c) => c !== category);
+      _s = _s.filter((c) => c !== category.key);
     } else {
-      _s.push(category);
+      _s.push(category.key);
     }
     setSelected(_s);
     onChange(_s);
@@ -26,16 +26,16 @@ const HorizontalBtnCategorySelection = ({
   return (
     <FlatList
       horizontal
-      keyExtractor={(item) => item}
+      keyExtractor={(item) => item.key}
       data={categories}
       style={styles.list}
       renderItem={({ item }) => (
         <Button
-          title={item}
+          title={item.label}
           titleStyle={styles.buttonTitle}
           buttonStyle={{
             ...styles.button,
-            backgroundColor: _selected.includes(item)
+            backgroundColor: _selected.includes(item.key)
               ? theme.colors.lightBlue100
               : theme.colors.white,
           }}
@@ -67,6 +67,7 @@ const useStyles = makeStyles((theme) => ({
     fontSize: 14,
     color: theme.colors.blue600,
     fontWeight: 'bold',
+    textTransform: 'capitalize',
   },
 }));
 

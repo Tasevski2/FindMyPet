@@ -7,6 +7,9 @@ import { useValidation } from '../../hooks';
 import { useStyles } from './Login';
 import { useNavigation } from '@react-navigation/native';
 import { PHONE_NUMBER_LENGTH } from '../../utils/consts';
+import { useMutation } from '@tanstack/react-query';
+import { API } from '../../api';
+import { isEmpty } from 'lodash';
 
 const RegisterScreen = () => {
   const navigation = useNavigation();
@@ -17,6 +20,11 @@ const RegisterScreen = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [errors, setErrors] = useState({});
+  const registerUserMutation = useMutation({
+    mutationFn: async (userData) => await API.registerUser(userData),
+    onSuccess: () => navigation.navigate('LogIn'),
+    onError: (err) => console.log(err),
+  });
 
   const onSubmit = () => {
     const { error: emailError } = validateEmail(email);
@@ -27,11 +35,29 @@ const RegisterScreen = () => {
       noWhiteSpace: true,
     });
 
-    setErrors({
-      email: emailError,
-      password: passwordError,
-      fullName: fullNameError,
-      phone: phoneError,
+    if (
+      !(
+        isEmpty(emailError) &&
+        isEmpty(passwordError) &&
+        isEmpty(fullNameError) &&
+        isEmpty(phoneError)
+      )
+    ) {
+      setErrors({
+        email: emailError,
+        password: passwordError,
+        fullName: fullNameError,
+        phone: phoneError,
+      });
+      return;
+    }
+    registerUserMutation.mutate({
+      email,
+      password,
+      fullName,
+      firstName: fullName.split(' ')[0], // TODO REMOVE firstName and lastName
+      lastName: fullName.split(' ')[1],
+      phoneNumber: phone,
     });
   };
 

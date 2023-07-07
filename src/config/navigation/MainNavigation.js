@@ -5,10 +5,34 @@ import HomeScreenNavigation from './HomeScreenNavigation';
 import MapScreenNavigation from './MapScreenNavigation';
 import NotificationsScreenNavigation from './NotificationsScreenNavigation';
 import MyProfileScreenNavigation from './MyProfileScreenNavigation';
+import {
+  requestUserMessagingTokenPermission,
+  getDeviceToken,
+} from '../../utils/requestMessagingTokenPermission';
+import { useEffect } from 'react';
+import { API } from '../../api';
+import { useMutation } from '@tanstack/react-query';
 
 const TabNavigator = createBottomTabNavigator();
 
 const MainNavigation = () => {
+  const tokenMutation = useMutation({
+    mutationFn: async (token) =>
+      (await API.setUserCloudMessagingToken(token)).data,
+    onSuccess: () =>
+      console.log('Successfully set the firebase messaging token'),
+    onError: (err) => console.log(err),
+  });
+
+  useEffect(() => {
+    (async () => {
+      if (requestUserMessagingTokenPermission()) {
+        const token = await getDeviceToken();
+        tokenMutation.mutate(token);
+      }
+    })();
+  }, []);
+
   const {
     theme: { colors },
   } = useTheme();

@@ -1,13 +1,17 @@
 import { Text, TouchableWithoutFeedback, View, Image } from 'react-native';
 import AppLayout from '../../layouts/AppLayout';
 import { Avatar, Button, Card, Dialog, Icon, makeStyles } from '@rneui/themed';
-import { useSelector } from 'react-redux';
-import { useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { useRef, useState } from 'react';
 import BottomDrawer from '../../components/BottomDrawer';
 import MyInput from '../../components/inputs/MyInput';
 import { useValidation } from '../../hooks';
 import { PHONE_NUMBER_LENGTH } from '../../utils/consts';
 import TakeOrChoosePhoto from '../../components/TakeOrChoosePhoto';
+import defaultAvatar from '../../assets/avatar.png';
+import { useMutation } from '@tanstack/react-query';
+import { API } from '../../api';
+import { logout, updateUserDetailsAction } from '../../store/actions';
 
 const editableFieldsEnum = {
   photo: 'photo',
@@ -25,11 +29,11 @@ const editableFieldsTitles = {
 
 const userFields = [
   {
-    canEdit: true,
+    canEdit: false,
     label: 'Слика',
     getRightComponent: (user, styles) => (
       <Avatar
-        source={user.photo}
+        source={user.photo ?? defaultAvatar}
         rounded
         size={50}
         containerStyle={styles.avatarContainer}
@@ -73,9 +77,32 @@ const fieldToEditCmp = {
 const MyProfileEditScreen = () => {
   const styles = useStyles();
   const user = useSelector((store) => store.user.user);
+  const dispatch = useDispatch();
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [isDrawerVisible, setDrawerVisibility] = useState(false);
   const [fieldToEdit, setFieldToEdit] = useState();
+  const updateUserDetailsMutation = useMutation({
+    mutationFn: async (userData) =>
+      (await API.updateUserDetails(userData)).data,
+    onSuccess: (res, userData) => {
+      console.log(res, userData);
+      if (!userData.newPassword) {
+        dispatch(updateUserDetailsAction(userData));
+      }
+      setDrawerVisibility(false);
+    },
+  });
+  const deleteUserProfileMutation = useMutation({
+    mutationFn: async () => (await API.deleteProfile()).data,
+    onSuccess: (res, userData) => {
+      setShowDeleteDialog(false);
+      dispatch(logout());
+    },
+  });
+
+  const deleteProfile = () => {
+    deleteUserProfileMutation.mutate();
+  };
 
   const onFieldPress = (canEdit, field) => {
     if (!canEdit) return;
@@ -84,8 +111,7 @@ const MyProfileEditScreen = () => {
   };
 
   const onSaveChanges = (fieldsObj) => {
-    console.log('Saving: ', fieldsObj);
-    setDrawerVisibility(false);
+    updateUserDetailsMutation.mutate(fieldsObj);
   };
 
   const getFieldToEditCmp = () => {
@@ -143,10 +169,7 @@ const MyProfileEditScreen = () => {
             title='Не'
             onPress={() => setShowDeleteDialog(false)}
           />
-          <Dialog.Button
-            title='Да'
-            onPress={() => console.log('Secondary Action Clicked!')}
-          />
+          <Dialog.Button title='Да' onPress={deleteProfile} />
         </Dialog.Actions>
       </Dialog>
       <BottomDrawer
@@ -244,7 +267,7 @@ const PasswordBottomDrawerContent = ({ saveChanges }) => {
       setError({ repeatPassword: 'Лозинките не се еднакви!' });
       return;
     }
-    saveChanges({ password });
+    saveChanges({ newPassword: password });
   };
 
   return (
@@ -280,7 +303,7 @@ const PhotoBottomDrawerContent = ({ oldValue, saveChanges }) => {
       <TakeOrChoosePhoto setImage={setImage} />
       {image && (
         <Image
-          source={{ uri: image }}
+          source={{ uri: image.uri }}
           style={{ width: 100, height: 100, borderRadius: 50, marginTop: 20 }}
         />
       )}

@@ -5,20 +5,35 @@ import AuthLayout from '../../layouts/AuthLayout';
 import MyInput from '../../components/inputs/MyInput';
 import { useValidation } from '../../hooks';
 import { useNavigation } from '@react-navigation/native';
+import { useMutation } from '@tanstack/react-query';
+import { API } from '../../api';
+import { isEmpty } from 'lodash';
+import { useDispatch } from 'react-redux';
+import { login } from '../../store/actions';
 
 const LoginScreen = () => {
   const navigation = useNavigation();
+  const dispatch = useDispatch();
   const styles = useStyles();
   const { validateEmail, validatePassword } = useValidation();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [errors, setErrors] = useState({});
+  const loginMutation = useMutation({
+    mutationFn: async (userData) => await API.loginUser(userData),
+    onSuccess: (res) => dispatch(login(res.data)),
+    onError: (err) => console.log(err.message),
+  });
 
   const onSubmit = () => {
     const { error: emailError } = validateEmail(email);
     const { error: passwordError } = validatePassword(password);
+    if (!(isEmpty(emailError) && isEmpty(passwordError))) {
+      setErrors({ email: emailError, password: passwordError });
+      return;
+    }
 
-    setErrors({ email: emailError, password: passwordError });
+    loginMutation.mutate({ email, password }); // TODO device token for cloud messages
   };
 
   return (
@@ -39,6 +54,15 @@ const LoginScreen = () => {
           icon={{ type: 'font-awesome-5', name: 'lock' }}
           secureTextEntry
         />
+        <Text style={styles.text}>
+          Ја заборавивте лозинката?{' '}
+          <Text
+            style={styles.enhancedText}
+            onPress={() => navigation.navigate('ForgotPassword')}
+          >
+            Кликнете тука!
+          </Text>
+        </Text>
       </View>
       <View>
         <Button
