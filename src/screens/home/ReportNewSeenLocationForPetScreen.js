@@ -16,7 +16,7 @@ import { PHONE_NUMBER_LENGTH } from '../../utils/consts';
 import { API } from '../../api';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useNavigation } from '@react-navigation/native';
-import DateTimePicker from '@react-native-community/datetimepicker';
+import DateTimePicker from '../../components/DateTimePicker';
 
 const minReportSeenPetDate = new Date(
   new Date().getTime() - 1 * 24 * 60 * 60 * 1000
@@ -320,28 +320,17 @@ const ContactAndPreview = ({
           />
         </View>
       </View>
-      <View style={{ ...styles.row, marginBottom: 15 }}>
+      <View style={{ ...styles.row, marginBottom: 15, flexWrap: 'wrap' }}>
         <Text style={{ ...styles.key }}>Виден на:</Text>
-        <View style={styles.row}>
-          {/* WE MUST HAVE 2 DATETIMEPICKER BECAUSE WITH MODE DATETIME IT ONLY WILL WORK ON IOS */}
-          <View style={{ width: 85, marginRight: 2 }}>
-            <DateTimePicker
-              value={dateSeen}
-              mode='date'
-              minimumDate={minReportSeenPetDate}
-              maximumDate={new Date()}
-              onChange={(e, date) => setDateSeen(date)}
-            />
-          </View>
-          <View style={{ width: 150 }}>
-            <DateTimePicker
-              value={timeSeen}
-              mode='time'
-              maximumDate={new Date()}
-              onChange={(e, date) => setTimeSeen(date)}
-            />
-          </View>
-        </View>
+        <DateTimePicker
+          time={timeSeen}
+          date={dateSeen}
+          setTime={setTimeSeen}
+          setDate={setDateSeen}
+          minDate={minReportSeenPetDate}
+          maxDate={new Date()}
+          maxTime={new Date()}
+        />
       </View>
       {/* pet info */}
       <View style={styles.hr}></View>
@@ -352,7 +341,12 @@ const ContactAndPreview = ({
         </View>
       </View>
       <Text
-        style={{ ...styles.key, marginBottom: 5, marginTop: 10, opacity: 0.6 }}
+        style={{
+          ...styles.key,
+          marginBottom: 5,
+          marginTop: 10,
+          opacity: 0.6,
+        }}
       >
         Нова локација:
       </Text>
@@ -476,7 +470,7 @@ export const useStyles = makeStyles((theme) => ({
   },
   sendActionBtnTitle: {
     fontWeight: 'bold',
-    fontSize: 24,
+    fontSize: 20,
   },
   mapContaiener: {
     flex: 1,

@@ -49,6 +49,8 @@ const NewSeenLocationMessageScreen = ({ route }) => {
                 },
                 altitude: 1000,
                 zoom: 15,
+                heading: 0,
+                pitch: 0,
               }}
             />
           </View>

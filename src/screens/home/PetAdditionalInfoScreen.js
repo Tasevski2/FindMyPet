@@ -4,7 +4,7 @@ import { Button, makeStyles } from '@rneui/themed';
 import { useNavigation } from '@react-navigation/native';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { API } from '../../api';
-import { formatDate } from '../../utils/formatDate';
+import { formatDateAndTime } from '../../utils/formatDate';
 import MyImage from '../../components/MyImage';
 
 const PetAdditionalInfoScreen = (props) => {
@@ -62,11 +62,11 @@ const PetAdditionalInfoScreen = (props) => {
               <Row keyName='Телефон' value={petOwner.phoneNumber} />
             </View>
             <View style={styles.petInfo}>
-              <Row keyName='Изгубен на' value={formatDate(lostAtTime)} />
+              <Row keyName='Изгубен на' value={formatDateAndTime(lostAtTime)} />
               {lastSeenAtDate && (
                 <Row
                   keyName='Последно виден на'
-                  value={formatDate(lastSeenAtDate)}
+                  value={formatDateAndTime(lastSeenAtDate)}
                 />
               )}
               {lastSeenAtLocation && (

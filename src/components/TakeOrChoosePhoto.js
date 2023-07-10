@@ -9,6 +9,14 @@ const TakeOrChoosePhoto = ({ reverseColor = false, setImage, space = 10 }) => {
   const styles = useStyles({ reverseColor, space });
 
   const pickImage = async () => {
+    let mediaPermissions = await ImagePicker.getMediaLibraryPermissionsAsync();
+    if (mediaPermissions.status !== 'granted') {
+      const requestedPermissions =
+        await ImagePicker.requestMediaLibraryPermissionsAsync();
+      mediaPermissions = requestedPermissions;
+    }
+    if (mediaPermissions.status !== 'granted') return;
+
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
       allowsEditing: true,
@@ -23,6 +31,14 @@ const TakeOrChoosePhoto = ({ reverseColor = false, setImage, space = 10 }) => {
   };
 
   const takeImage = async () => {
+    let cameraPermissions = await ImagePicker.getCameraPermissionsAsync();
+    if (cameraPermissions.status !== 'granted') {
+      const requestedPermissions =
+        await ImagePicker.requestCameraPermissionsAsync();
+      cameraPermissions = requestedPermissions;
+    }
+    if (cameraPermissions.status !== 'granted') return;
+
     let result = await ImagePicker.launchCameraAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
       aspect: [1, 1],
@@ -33,7 +49,9 @@ const TakeOrChoosePhoto = ({ reverseColor = false, setImage, space = 10 }) => {
 
     if (result.canceled) return;
 
-    setImage(result.assets[0].uri);
+    const uri = result.assets[0].uri;
+    const type = uri.split('.').at(-1);
+    setImage({ uri, type });
   };
 
   useEffect(() => {

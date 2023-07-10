@@ -13,6 +13,8 @@ const INIT_CAMERA = {
   altitude: 40000,
   // Only when using Google Maps.
   zoom: 10,
+  heading: 0,
+  pitch: 0,
 };
 
 const Map = ({

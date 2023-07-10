@@ -25,7 +25,7 @@ import useGetPetTypes from '../../hooks/useGetPetTypes';
 import { capitalize } from 'lodash';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { API } from '../../api';
-import DateTimePicker from '@react-native-community/datetimepicker';
+import DateTimePicker from '../../components/DateTimePicker';
 
 const formInitState = {
   location: null,
@@ -244,28 +244,17 @@ const PetInfo = ({
                 {...styles.dropdown}
               />
             </View>
-            <View style={{ ...styles.row, marginTop: 15 }}>
+            <View style={{ ...styles.row, marginTop: 15, flexWrap: 'wrap' }}>
               <Text style={{ ...styles.key }}>Изгбен на:</Text>
-              <View style={styles.row}>
-                {/* WE MUST HAVE 2 DATETIMEPICKER BECAUSE WITH MODE DATETIME IT ONLY WILL WORK ON IOS */}
-                <View style={{ width: 85, marginRight: 2 }}>
-                  <DateTimePicker
-                    value={dateLost}
-                    mode='date'
-                    minimumDate={minReportLostPetDate}
-                    maximumDate={new Date()}
-                    onChange={(e, date) => setDateLost(date)}
-                  />
-                </View>
-                <View style={{ width: 150 }}>
-                  <DateTimePicker
-                    value={timeLost}
-                    mode='time'
-                    maximumDate={new Date()}
-                    onChange={(e, date) => setTimeLost(date)}
-                  />
-                </View>
-              </View>
+              <DateTimePicker
+                time={timeLost}
+                date={dateLost}
+                setTime={setTimeLost}
+                setDate={setDateLost}
+                minDate={minReportLostPetDate}
+                maxDate={new Date()}
+                maxTime={new Date()}
+              />
             </View>
             <View style={{ ...styles.row, marginTop: 20 }}>
               <Text style={styles.key}>Опис:</Text>
