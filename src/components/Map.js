@@ -64,13 +64,8 @@ const Map = ({
             key={ind}
             coordinate={marker.coordinates}
             pinColor={marker.color ?? theme.colors.red500}
-            onPress={
-              // TODO change the first parameter of onMarkerPress to marker
-              () => onMarkerPress && onMarkerPress(marker.callbackItem, mapRef)
-              // mapRef.current.animateCamera(
-              //   { center: marker.coordinates, altitude: 1000, zoom: 15 },
-              //   1
-              // )
+            onPress={() =>
+              onMarkerPress && onMarkerPress(marker.callbackItem, mapRef)
             }
           />
         ))}

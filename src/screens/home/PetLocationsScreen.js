@@ -28,7 +28,6 @@ const PetLocationsScreen = (props) => {
   );
 
   const onMarkerPress = (item) => {
-    console.log({ item });
     if (!item?.id) return;
     navigation.navigate('PetSeenLocationInfoScreen', { ...item, name });
   };

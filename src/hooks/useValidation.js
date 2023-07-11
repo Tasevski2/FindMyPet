@@ -63,7 +63,6 @@ const useValidation = () => {
   const checkIfFormIsValidByErrorsObj = (errors = {}) => {
     let isValid = true;
     for (let v in Object.values(errors)) {
-      console.log(`v: ${v}`);
       if (v) {
         isValid = false;
         break;

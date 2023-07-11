@@ -62,7 +62,6 @@ const deteleLostPetPost = (id) => axiosInstance.get(`/lost-pets/delete/${id}`);
 
 const createLostPetPost = (formData, fieldsToBeSend) => {
   let queryString = '?';
-  console.log({ formData, fieldsToBeSend });
   for (let [key, value] of Object.entries(fieldsToBeSend)) {
     queryString += `${key}=${value}&`;
   }

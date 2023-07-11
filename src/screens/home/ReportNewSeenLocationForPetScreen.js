@@ -145,7 +145,6 @@ export const ChooseLocation = ({
 
   const onMapPress = (event) => {
     const coordinates = event.nativeEvent.coordinate;
-    console.log({ onMapPress: coordinates });
     setLocation(coordinates);
   };
 
@@ -162,7 +161,6 @@ export const ChooseLocation = ({
           markers={location ? [{ coordinates: location }] : []}
           allowCurrentLocation
           currentLocationCb={({ coordinates }) => {
-            console.log({ onCurrentPress: coordinates });
             setLocation(coordinates);
           }}
         />

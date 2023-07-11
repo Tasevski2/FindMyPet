@@ -34,7 +34,7 @@ const LoginScreen = () => {
       return;
     }
 
-    loginMutation.mutate({ email, password }); // TODO device token for cloud messages
+    loginMutation.mutate({ email, password });
   };
 
   return (

@@ -56,8 +56,6 @@ const RegisterScreen = () => {
       email,
       password,
       fullName,
-      firstName: fullName.split(' ')[0], // TODO REMOVE firstName and lastName
-      lastName: fullName.split(' ')[1],
       phoneNumber: phone,
     });
   };

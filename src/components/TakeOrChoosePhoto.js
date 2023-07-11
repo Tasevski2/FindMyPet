@@ -45,8 +45,6 @@ const TakeOrChoosePhoto = ({ reverseColor = false, setImage, space = 10 }) => {
       quality: 1,
     });
 
-    console.log(result);
-
     if (result.canceled) return;
 
     const uri = result.assets[0].uri;
@@ -58,7 +56,6 @@ const TakeOrChoosePhoto = ({ reverseColor = false, setImage, space = 10 }) => {
     (async () => {
       if (ExpoConstants.platform.ios) {
         let cameraStatus = await ImagePicker.getCameraPermissionsAsync();
-        console.log({ cameraStatus });
         if (cameraStatus.status !== 'granted') {
           cameraStatus = await ImagePicker.requestCameraPermissionsAsync();
           if (cameraStatus.status !== 'granted') {

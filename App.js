@@ -19,7 +19,6 @@ const App = () => {
           await PermissionsAndroid.request(
             PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS
           );
-        console.log({ permissionsPostNotificationsAndroid });
       })();
     }
 
@@ -29,7 +28,6 @@ const App = () => {
     );
     const msgSub = messaging().onMessage((message) => {
       Alert.alert(message.notification.title, message.notification.body);
-      console.log('Handled message', message);
     });
     return () => {
       clearTimeout(timeout);
