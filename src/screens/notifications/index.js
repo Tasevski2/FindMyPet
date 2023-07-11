@@ -1,4 +1,4 @@
-import { FlatList, StyleSheet } from 'react-native';
+import { ActivityIndicator, FlatList, StyleSheet } from 'react-native';
 import { NotificationTypeEnum } from '../../../enums';
 import NotificationCard from '../../components/NotificationCard';
 import AppLayout from '../../layouts/AppLayout';
@@ -17,18 +17,24 @@ const NotificationsScreen = ({ navigation }) => {
     navigation.navigate('NewSeenLocationMessage', notification);
   };
 
-  console.log({ notifications, isLoadingNotifications });
-
   return (
     <AppLayout>
-      <FlatList
-        data={notifications}
-        key={(item) => item.id}
-        renderItem={({ item }) => (
-          <NotificationCard notification={item} onPress={onCardPress} />
-        )}
-        style={styles.lostPetsList}
-      />
+      {isLoadingNotifications ? (
+        <ActivityIndicator
+          size={'large'}
+          color='white'
+          style={{ marginTop: 40 }}
+        />
+      ) : (
+        <FlatList
+          data={notifications}
+          key={(item) => item.id}
+          renderItem={({ item }) => (
+            <NotificationCard notification={item} onPress={onCardPress} />
+          )}
+          style={styles.lostPetsList}
+        />
+      )}
     </AppLayout>
   );
 };

@@ -1,6 +1,20 @@
-import { Text, TouchableWithoutFeedback, View, Image } from 'react-native';
+import {
+  Text,
+  TouchableWithoutFeedback,
+  View,
+  Image,
+  ActivityIndicator,
+} from 'react-native';
 import AppLayout from '../../layouts/AppLayout';
-import { Avatar, Button, Card, Dialog, Icon, makeStyles } from '@rneui/themed';
+import {
+  Avatar,
+  Button,
+  Card,
+  Dialog,
+  Icon,
+  makeStyles,
+  useTheme,
+} from '@rneui/themed';
 import { useDispatch, useSelector } from 'react-redux';
 import { useRef, useState } from 'react';
 import BottomDrawer from '../../components/BottomDrawer';
@@ -76,6 +90,7 @@ const fieldToEditCmp = {
 
 const MyProfileEditScreen = () => {
   const styles = useStyles();
+  const { theme } = useTheme();
   const user = useSelector((store) => store.user.user);
   const dispatch = useDispatch();
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
@@ -85,7 +100,6 @@ const MyProfileEditScreen = () => {
     mutationFn: async (userData) =>
       (await API.updateUserDetails(userData)).data,
     onSuccess: (res, userData) => {
-      console.log(res, userData);
       if (!userData.newPassword) {
         dispatch(updateUserDetailsAction(userData));
       }
@@ -120,6 +134,7 @@ const MyProfileEditScreen = () => {
     return fieldToEditCmp[fieldToEdit]({
       oldValue: user[fieldToEdit],
       saveChanges: onSaveChanges,
+      isUpdating: updateUserDetailsMutation.isLoading,
     });
   };
 
@@ -165,11 +180,23 @@ const MyProfileEditScreen = () => {
         <Dialog.Title title='Избриши профил' />
         <Text>Дали сте сигурни дека сакате да го избришете профилот?</Text>
         <Dialog.Actions>
+          {!deleteUserProfileMutation.isLoading && (
+            <Dialog.Button
+              title='Не'
+              onPress={() => setShowDeleteDialog(false)}
+            />
+          )}
           <Dialog.Button
-            title='Не'
-            onPress={() => setShowDeleteDialog(false)}
+            title={
+              deleteUserProfileMutation.isLoading ? (
+                <ActivityIndicator color={theme.colors.appBackground} />
+              ) : (
+                'Да'
+              )
+            }
+            onPress={deleteProfile}
+            disabled={deleteUserProfileMutation.isLoading}
           />
-          <Dialog.Button title='Да' onPress={deleteProfile} />
         </Dialog.Actions>
       </Dialog>
       <BottomDrawer
@@ -185,8 +212,9 @@ const MyProfileEditScreen = () => {
   );
 };
 
-const SaveChangesButton = ({ onPress }) => {
+const SaveChangesButton = ({ onPress, loading }) => {
   const styles = useStyles();
+  const { theme } = useTheme();
   return (
     <Button
       containerStyle={styles.saveChangesBtnContainer}
@@ -194,11 +222,25 @@ const SaveChangesButton = ({ onPress }) => {
       titleStyle={styles.btnTitle}
       title='Сочувај ги промените'
       onPress={onPress}
+      icon={
+        loading && (
+          <ActivityIndicator
+            color={theme.colors.appBackground}
+            style={{ marginLeft: 7 }}
+          />
+        )
+      }
+      iconPosition='right'
+      disabled={loading}
     />
   );
 };
 
-const FullNameBottomDrawerContent = ({ oldValue = '', saveChanges }) => {
+const FullNameBottomDrawerContent = ({
+  oldValue = '',
+  saveChanges,
+  isUpdating,
+}) => {
   const { validateLength } = useValidation();
   const [fullName, setFullName] = useState(oldValue);
   const [error, setError] = useState(null);
@@ -218,12 +260,16 @@ const FullNameBottomDrawerContent = ({ oldValue = '', saveChanges }) => {
         icon={{ type: 'material-community', name: 'email' }}
         reverseColor
       />
-      <SaveChangesButton onPress={onSubmit} />
+      <SaveChangesButton onPress={onSubmit} loading={isUpdating} />
     </>
   );
 };
 
-const PhoneNumberBottomDrawerContent = ({ oldValue = '', saveChanges }) => {
+const PhoneNumberBottomDrawerContent = ({
+  oldValue = '',
+  saveChanges,
+  isUpdating,
+}) => {
   const { validateLength } = useValidation();
   const [phoneNumber, setPhoneNumber] = useState(oldValue);
   const [error, setError] = useState(null);
@@ -246,12 +292,12 @@ const PhoneNumberBottomDrawerContent = ({ oldValue = '', saveChanges }) => {
         icon={{ type: 'font-awesome-5', name: 'phone' }}
         reverseColor
       />
-      <SaveChangesButton onPress={onSubmit} />
+      <SaveChangesButton onPress={onSubmit} loading={isUpdating} />
     </>
   );
 };
 
-const PasswordBottomDrawerContent = ({ saveChanges }) => {
+const PasswordBottomDrawerContent = ({ saveChanges, isUpdating }) => {
   const { validatePassword } = useValidation();
   const [password, setPassword] = useState('');
   const [repeatPassword, setRepeatPassword] = useState('');
@@ -290,12 +336,12 @@ const PasswordBottomDrawerContent = ({ saveChanges }) => {
         secureTextEntry
         reverseColor
       />
-      <SaveChangesButton onPress={onSubmit} />
+      <SaveChangesButton onPress={onSubmit} loading={isUpdating} />
     </>
   );
 };
 
-const PhotoBottomDrawerContent = ({ oldValue, saveChanges }) => {
+const PhotoBottomDrawerContent = ({ oldValue, saveChanges, isUpdating }) => {
   const [image, setImage] = useState(null);
   const onSubmit = () => {};
   return (
@@ -307,7 +353,7 @@ const PhotoBottomDrawerContent = ({ oldValue, saveChanges }) => {
           style={{ width: 100, height: 100, borderRadius: 50, marginTop: 20 }}
         />
       )}
-      <SaveChangesButton onPress={onSubmit} />
+      <SaveChangesButton onPress={onSubmit} loading={isUpdating} />
     </>
   );
 };

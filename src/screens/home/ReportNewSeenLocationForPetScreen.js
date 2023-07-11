@@ -1,4 +1,4 @@
-import { View, Text, Image, Dimensions } from 'react-native';
+import { View, Text, Image, Dimensions, ActivityIndicator } from 'react-native';
 import AppLayout from '../../layouts/AppLayout';
 import Animated, {
   FadeOutLeft,
@@ -121,6 +121,7 @@ const ReportNewSeenLocationForPetScreen = (props) => {
           onNext={onNext}
           onBack={onBack}
           submitData={updateFormData}
+          disableNext={reportLostPetMutation.isLoading}
         />
       )}
     </AppLayout>
@@ -233,6 +234,7 @@ export const ChooseImage = ({
 const ContactAndPreview = ({
   tabId,
   onNext,
+  disableNext = false,
   onBack,
   submitData,
   initFullName,
@@ -353,7 +355,12 @@ const ContactAndPreview = ({
       <View style={styles.mapContaiener}>
         <Map markers={[{ coordinates: location }]} />
       </View>
-      <ActionsBtns tabId={tabId} onBack={onBack} onNext={onSend} />
+      <ActionsBtns
+        tabId={tabId}
+        onBack={onBack}
+        onNext={onSend}
+        disableNext={disableNext}
+      />
     </Animated.View>
   );
 };
@@ -385,12 +392,19 @@ export const ActionsBtns = ({ tabId, onBack, onNext, disableNext }) => {
           title={'Додади'}
           onPress={() => onNext(tabId)}
           icon={
-            <Icon
-              type='ionicon'
-              name='add'
-              color={theme.colors.white}
-              style={{ marginLeft: 7 }}
-            />
+            disableNext ? (
+              <ActivityIndicator
+                color={theme.colors.appBackground}
+                style={{ marginLeft: 7 }}
+              />
+            ) : (
+              <Icon
+                type='ionicon'
+                name='add'
+                color={theme.colors.white}
+                style={{ marginLeft: 7 }}
+              />
+            )
           }
           iconPosition='right'
           containerStyle={{

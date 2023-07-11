@@ -1,6 +1,13 @@
-import { View, Text, Image, ScrollView, Dimensions } from 'react-native';
+import {
+  View,
+  Text,
+  Image,
+  ScrollView,
+  Dimensions,
+  ActivityIndicator,
+} from 'react-native';
 import AppLayout from '../../layouts/AppLayout';
-import { Button, makeStyles } from '@rneui/themed';
+import { Button, makeStyles, useTheme } from '@rneui/themed';
 import { useNavigation } from '@react-navigation/native';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { API } from '../../api';
@@ -24,6 +31,7 @@ const PetAdditionalInfoScreen = (props) => {
   } = props.route.params;
 
   const navigation = useNavigation();
+  const { theme } = useTheme();
   const styles = useStyles();
   const deletePostMutation = useMutation({
     mutationFn: async () => (await API.deteleLostPetPost(id)).data,
@@ -113,6 +121,16 @@ const PetAdditionalInfoScreen = (props) => {
                 buttonStyle={styles.reportLocationBtn}
                 titleStyle={styles.btnTitle}
                 onPress={deletePost}
+                icon={
+                  !deletePostMutation.isLoading && (
+                    <ActivityIndicator
+                      color={theme.colors.appBackground}
+                      style={{ marginLeft: 7 }}
+                    />
+                  )
+                }
+                iconPosition='right'
+                disabled={!deletePostMutation.isLoading}
               />
             )}
           </View>

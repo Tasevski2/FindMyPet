@@ -141,6 +141,7 @@ const AddScreen = () => {
           initType={formData.type}
           initDescription={formData.description}
           location={formData.location}
+          disableNext={createLostPetPostMutation.isLoading}
         />
       )}
     </AppLayout>
@@ -150,6 +151,7 @@ const AddScreen = () => {
 const PetInfo = ({
   tabId,
   onNext,
+  disableNext,
   onBack,
   submitData,
   initName,
@@ -283,7 +285,12 @@ const PetInfo = ({
           <View style={styles.mapContaiener}>
             <Map markers={location ? [{ coordinates: location }] : []} />
           </View>
-          <ActionsBtns tabId={tabId} onBack={onBack} onNext={onSend} />
+          <ActionsBtns
+            tabId={tabId}
+            onBack={onBack}
+            onNext={onSend}
+            disableNext={disableNext}
+          />
         </>
       </Animated.View>
     </TouchableWithoutFeedback>

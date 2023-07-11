@@ -59,9 +59,9 @@ const Map = ({
         initialCamera={initCamera}
         onPress={(e) => onMapPress && onMapPress(e)}
       >
-        {markers.map((marker) => (
+        {markers.map((marker, ind) => (
           <Marker
-            key={`${marker.coordinates.latitude},${marker.coordinates.longitude}`}
+            key={ind}
             coordinate={marker.coordinates}
             pinColor={marker.color ?? theme.colors.red500}
             onPress={

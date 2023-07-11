@@ -1,6 +1,6 @@
-import { Button, makeStyles } from '@rneui/themed';
+import { Button, makeStyles, useTheme } from '@rneui/themed';
 import { useState } from 'react';
-import { View, Text } from 'react-native';
+import { View, Text, ActivityIndicator } from 'react-native';
 import AuthLayout from '../../layouts/AuthLayout';
 import MyInput from '../../components/inputs/MyInput';
 import { useValidation } from '../../hooks';
@@ -15,6 +15,7 @@ const LoginScreen = () => {
   const navigation = useNavigation();
   const dispatch = useDispatch();
   const styles = useStyles();
+  const { theme } = useTheme();
   const { validateEmail, validatePassword } = useValidation();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -66,9 +67,16 @@ const LoginScreen = () => {
       </View>
       <View>
         <Button
-          title='Најави се'
+          title={
+            loginMutation.isLoading ? (
+              <ActivityIndicator color={theme.colors.appBackground} />
+            ) : (
+              'Најави се'
+            )
+          }
           containerStyle={styles.submitBtn}
           onPress={onSubmit}
+          disabled={loginMutation.isLoading}
         />
         <Text style={styles.text}>
           Немате профил?{' '}

@@ -1,5 +1,5 @@
-import { View, Text } from 'react-native';
-import { Button } from '@rneui/themed';
+import { View, Text, ActivityIndicator } from 'react-native';
+import { Button, useTheme } from '@rneui/themed';
 import { useState } from 'react';
 import AuthLayout from '../../layouts/AuthLayout';
 import MyInput from '../../components/inputs/MyInput';
@@ -14,6 +14,7 @@ import { isEmpty } from 'lodash';
 const RegisterScreen = () => {
   const navigation = useNavigation();
   const styles = useStyles();
+  const { theme } = useTheme();
   const { validateEmail, validatePassword, validateLength } = useValidation();
   const [fullName, setFullName] = useState('');
   const [phone, setPhone] = useState('');
@@ -97,9 +98,16 @@ const RegisterScreen = () => {
       </View>
       <View>
         <Button
-          title='Регистрирај се'
+          title={
+            registerUserMutation.isLoading ? (
+              <ActivityIndicator color={theme.colors.appBackground} />
+            ) : (
+              'Регистрирај се'
+            )
+          }
           containerStyle={styles.submitBtn}
           onPress={onSubmit}
+          disabled={registerUserMutation.isLoading}
         />
         <Text style={styles.text}>
           Имате профил?{' '}

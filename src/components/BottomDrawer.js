@@ -1,6 +1,5 @@
 import { Icon, makeStyles } from '@rneui/themed';
 import { Dimensions, Modal, TouchableOpacity, View, Text } from 'react-native';
-import { TouchableWithoutFeedback } from 'react-native-gesture-handler';
 
 const BottomDrawer = ({ isVisible, onClose, close, title, children }) => {
   const styles = useStyles();

@@ -1,6 +1,6 @@
 import { Card, Icon, makeStyles, useTheme } from '@rneui/themed';
 import AppLayout from '../../layouts/AppLayout';
-import { Text, View } from 'react-native';
+import { ActivityIndicator, Text, View } from 'react-native';
 import Map from '../../components/Map';
 import { useQuery } from '@tanstack/react-query';
 import { API } from '../../api';
@@ -26,7 +26,7 @@ const PetLocationsScreen = (props) => {
       })),
     [seenPetLocations]
   );
-  console.log({ seenPetLocations });
+
   const onMarkerPress = (item) => {
     console.log({ item });
     if (!item?.id) return;
@@ -40,6 +40,13 @@ const PetLocationsScreen = (props) => {
         wrapperStyle={styles.wrapperStyle}
       >
         <View style={styles.mapWrapper}>
+          {isLoadingSeenPetLocations && (
+            <ActivityIndicator
+              color={theme.colors.blue900}
+              size={'large'}
+              style={{ position: 'absolute', top: 10, right: 10, zIndex: 10 }}
+            />
+          )}
           <Map
             markers={[
               ...seenPetsMarkers,
@@ -89,6 +96,7 @@ const useStyles = makeStyles((theme) => ({
   mapWrapper: {
     height: '90%',
     width: '100%',
+    position: 'relative',
   },
   legend: {
     marginTop: 10,
