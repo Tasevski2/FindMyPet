@@ -106,6 +106,8 @@ const AddScreen = () => {
     setFormData((prev) => ({ ...prev, type: petTypes[0]?.value }));
   }, [petTypes]);
 
+  useEffect(() => () => resetFormState(), []);
+
   return (
     <AppLayout>
       {activeTab === 0 && (

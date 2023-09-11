@@ -122,7 +122,7 @@ const PetAdditionalInfoScreen = (props) => {
                 titleStyle={styles.btnTitle}
                 onPress={deletePost}
                 icon={
-                  !deletePostMutation.isLoading && (
+                  deletePostMutation.isLoading && (
                     <ActivityIndicator
                       color={theme.colors.appBackground}
                       style={{ marginLeft: 7 }}
@@ -130,7 +130,7 @@ const PetAdditionalInfoScreen = (props) => {
                   )
                 }
                 iconPosition='right'
-                disabled={!deletePostMutation.isLoading}
+                disabled={deletePostMutation.isLoading}
               />
             )}
           </View>
